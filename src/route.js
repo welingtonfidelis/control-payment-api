@@ -3,6 +3,13 @@ const routes = express.Router()
 require('dotenv-safe').config()
 const jwt = require('jsonwebtoken');
 
+const UserController = require('./controllers/UserController');
+
+//login
+routes.post('/user/login', UserController.login);
+
+
+
 //Validação de Token para continuar a executar requizição
 function verifyJWT(req, res, next) {
     let token = req.headers['token']
@@ -23,8 +30,9 @@ function verifyJWT(req, res, next) {
     });
 }
 
-routes.post('/login', (req, res) => {
-    res.json({resp: 'oi'});
-})
+//códigos internos de respostas
+//10 login efetuado com sucesso
+//11 erro login - usuario/email incorreto (não existe no banco)
+//12 erro login - senha incorreta
 
 module.exports = routes

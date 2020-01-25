@@ -4,7 +4,8 @@
   "description": "back-end de aplicaçao para controle e gerenciamento de usuarios, clientes e doaçoes",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon server.js"
   },
   "author": "Welington Fidelis de Sousa",
   "license": "ISC",
@@ -20,6 +21,7 @@
     "yup": "^0.28.0"
   },
   "devDependencies": {
+    "nodemon": "^2.0.2",
     "sequelize-cli": "^5.5.1"
   }
 }
