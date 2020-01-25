@@ -8,7 +8,34 @@ const UserController = require('./controllers/UserController');
 //login
 routes.post('/user/login', UserController.login);
 
+//Validação de token para acesso às rotas
+routes.use(verifyJWT);
 
+//Usuário
+routes.post('/user', (req, res) => {
+    UserController.create(req, res);
+});
+routes.get('/user', (req, res) => {
+    UserController.getAll(req, res)
+});
+routes.get('/user/byuser', (req, res) => {
+    UserController.getByUser(req, res)
+});
+routes.get('/user/byemail', (req, res) => {
+    UserController.getByEmail(req, res)
+});
+routes.get('/user/:id', (req, res) => {
+    UserController.get(req, res)
+});
+routes.get('/user/logs/:id', (req, res) => {
+    UserController.getUserLogs(req, res)
+});
+routes.put('/user/:id', (req, res) => {
+    UserController.update(req, res)
+});
+routes.delete('/user/:id', (req, res) => {
+    UserController.delete(req, res)
+});
 
 //Validação de Token para continuar a executar requizição
 function verifyJWT(req, res, next) {
