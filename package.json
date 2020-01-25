@@ -1,0 +1,25 @@
+{
+  "name": "ctrl-cont-api",
+  "version": "1.0.0",
+  "description": "back-end de aplicaçao para controle e gerenciamento de usuarios, clientes e doaçoes",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Welington Fidelis de Sousa",
+  "license": "ISC",
+  "dependencies": {
+    "bcrypt": "^3.0.7",
+    "cors": "^2.8.5",
+    "dotenv-safe": "^8.2.0",
+    "express": "^4.17.1",
+    "faker": "^4.1.0",
+    "jsonwebtoken": "^8.5.1",
+    "pg": "^7.17.1",
+    "sequelize": "^5.21.3",
+    "yup": "^0.28.0"
+  },
+  "devDependencies": {
+    "sequelize-cli": "^5.5.1"
+  }
+}
