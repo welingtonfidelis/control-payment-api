@@ -14,7 +14,7 @@ module.exports = {
 
         } catch (error) {
             const err = error.stack || error.errors || error.message || error;
-            Util.saveLogError(action, err, UserId)
+            Util.saveLogError(action, err, UserId);
         }
     },
     async update(req, res) {
@@ -31,8 +31,10 @@ module.exports = {
                         id: address.id
                     }
                 }
-            );            
-            return query;
+            );   
+
+            Util.saveLogInfo(action, UserId)        
+            return query.dataValues;
 
         } catch (error) {
             const err = error.stack || error.errors || error.message || error;
@@ -40,6 +42,7 @@ module.exports = {
             console.log(err);
         }
     },
+
     async delete(req, res) {
         const { id, UserId } = req.body.address, action = 'DELETE ADDRESS';
 

@@ -4,6 +4,7 @@ require('dotenv-safe').config()
 const jwt = require('jsonwebtoken');
 
 const UserController = require('./controllers/UserController');
+const TaxpayerController = require('./controllers/TaxpayerController');
 
 //login
 routes.post('/user/login', UserController.login);
@@ -37,6 +38,27 @@ routes.delete('/user/:id', (req, res) => {
     UserController.delete(req, res)
 });
 
+//Contribuinte
+routes.post('/taxpayer', (req, res) => {
+    TaxpayerController.create(req, res);
+});
+routes.get('/taxpayer/byemail', (req, res) => {
+    TaxpayerController.getByEmail(req, res);
+});
+routes.get('/taxpayer', (req, res) => {
+    TaxpayerController.getAll(req, res);
+});
+routes.get('/taxpayer/:id', (req, res) => {
+    TaxpayerController.get(req, res);
+});
+routes.put('/taxpayer/:id', (req, res) => {
+    TaxpayerController.update(req, res);
+});
+routes.delete('/taxpayer/:id', (req, res) => {
+    TaxpayerController.delete(req, res);
+});
+
+
 //Validação de Token para continuar a executar requizição
 function verifyJWT(req, res, next) {
     let token = req.headers['token']
@@ -57,9 +79,14 @@ function verifyJWT(req, res, next) {
     });
 }
 
-//códigos internos de respostas
+//-------- CÓDIGOS INTERNOS DE RESPOSTAS AO USUÁRIO ----------//
+
 //10 login efetuado com sucesso
 //11 erro login - usuario/email incorreto (não existe no banco)
 //12 erro login - senha incorreta
+
+//20 sucesso na requisição (create, update, select, delete)
+//21 informações inválidas (fora do padrão esperado. Ex: criar usuário sem email)
+//22 problema interno da aplicação
 
 module.exports = routes

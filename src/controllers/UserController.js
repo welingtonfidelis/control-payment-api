@@ -86,15 +86,15 @@ module.exports = {
                 const query = await User.create(user);
 
                 Util.saveLogInfo(action, UserId)
-                res.status(200).send({ status: true, response: query });
+                res.status(200).send({ status: true, response: query, code: 20 });
             } catch (error) {
                 const err = error.stack || error.errors || error.message || error;
                 Util.saveLogError(action, err, UserId)
-                res.status(500).send({ status: false, response: err })
+                res.status(500).send({ status: false, response: err, code: 22 })
             }
         }
         else {
-            res.status(400).send({ status: false, response: 'invalid user info' })
+            res.status(400).send({ status: false, response: 'invalid user info', code: 21 })
         }
     },
 
@@ -118,11 +118,11 @@ module.exports = {
                 }],
             });
 
-            res.status(200).send({ status: true, response: query });
+            res.status(200).send({ status: true, response: query, code: 20 });
         } catch (error) {
             const err = error.stack || error.errors || error.message || error;
             Util.saveLogError(action, err, UserId)
-            res.status(500).send({ status: false, response: err })
+            res.status(500).send({ status: false, response: err, code: 22 })
         }
     },
 
@@ -147,7 +147,7 @@ module.exports = {
                 }],
             })
 
-            res.status(200).send({ status: true, response: query });
+            res.status(200).send({ status: true, response: query, code: 20 });
 
         } catch (error) {
             const err = error.stack || error.errors || error.message || error;
@@ -174,12 +174,12 @@ module.exports = {
                 ],
             })
 
-            res.status(200).send({ status: true, response: query });
+            res.status(200).send({ status: true, response: query, code: 20 });
 
         } catch (error) {
             const err = error.stack || error.errors || error.message || error;
             Util.saveLogError(action, err, UserId)
-            res.status(500).send({ status: false, response: err })
+            res.status(500).send({ status: false, response: err, code: 22 })
         }
     },
 
@@ -193,11 +193,11 @@ module.exports = {
                 attributes: ['id']
             });
 
-            res.status(200).send({ status: true, response: query });
+            res.status(200).send({ status: true, response: query, code: 20 });
         } catch (error) {
             const err = error.stack || error.errors || error.message || error;
             Util.saveLogError(action, err, UserId)
-            res.status(500).send({ status: false, response: err })
+            res.status(500).send({ status: false, response: err, code: 22 })
         }
     },
 
@@ -211,11 +211,11 @@ module.exports = {
                 attributes: ['id']
             });
 
-            res.status(200).send({ status: true, response: query });
+            res.status(200).send({ status: true, response: query, code: 20 });
         } catch (error) {
             const err = error.stack || error.errors || error.message || error;
             Util.saveLogError(action, err, UserId)
-            res.status(500).send({ status: false, response: err })
+            res.status(500).send({ status: false, response: err, code: 22 })
         }
     },
 
@@ -237,16 +237,16 @@ module.exports = {
                     });
 
                 Util.saveLogInfo(action, UserId)
-                res.status(200).send({ status: true, response: query });
+                res.status(200).send({ status: true, response: query, code: 20 });
 
             } catch (error) {
                 const err = error.stack || error.errors || error.message || error;
                 Util.saveLogError(action, err, UserId)
-                res.status(500).send({ status: false, response: err })
+                res.status(500).send({ status: false, response: err, code: 22 })
             }
         }
         else {
-            res.status(400).send({ status: false, response: 'invalid user info', code: 406 })
+            res.status(400).send({ status: false, response: 'invalid user info', code: 21 })
         }
     },
 
@@ -261,12 +261,12 @@ module.exports = {
             });
 
             Util.saveLogInfo(action, UserId)
-            res.status(200).send({ status: true, response: query });
+            res.status(200).send({ status: true, response: query, code: 20 });
 
         } catch (error) {
             const err = error.stack || error.errors || error.message || error;
             Util.saveLogError(action, err, UserId)
-            res.status(500).send({ status: false, response: err })
+            res.status(500).send({ status: false, response: err, code: 22 })
         }
     }
 }
