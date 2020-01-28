@@ -1,4 +1,6 @@
 const { Address } = require('../models');
+const { State } = require('../models');
+
 const Util = require('../services/Util');
 
 module.exports = {
@@ -17,6 +19,28 @@ module.exports = {
             Util.saveLogError(action, err, UserId);
         }
     },
+
+    async getState(req, res) {
+        const action = 'SELECT ALL STATES';
+        const { UserId } = req.body;
+    
+        try {
+          const query = await State.findAll({
+            where: {},
+            attributes: [
+              "name", "code"
+            ],
+            order: [['name', 'ASC']],
+          });
+    
+          res.status(200).send({ status: true, response: query, code: 20 });
+        } catch (error) {
+          const err = error.stack || error.errors || error.message || error;
+          UtilController.saveLogError(action, err, UserId)
+          res.status(500).send({ status: false, response: err, code: 22 })
+        }
+      },
+
     async update(req, res) {
         let { UserId, address } = req.body, action = 'UPDATE ADDRESS';
 

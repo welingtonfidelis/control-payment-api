@@ -5,6 +5,7 @@ const jwt = require('jsonwebtoken');
 
 const UserController = require('./controllers/UserController');
 const TaxpayerController = require('./controllers/TaxpayerController');
+const AddressController = require('./controllers/AddressController');
 
 //login
 routes.post('/user/login', UserController.login);
@@ -58,7 +59,10 @@ routes.delete('/taxpayer/:id', (req, res) => {
     TaxpayerController.delete(req, res);
 });
 
-
+//Endereço
+routes.get('/address/state', (req, res) => {
+    AddressController.getState(req, res);
+})
 //Validação de Token para continuar a executar requizição
 function verifyJWT(req, res, next) {
     let token = req.headers['token']
