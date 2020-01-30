@@ -8,7 +8,7 @@ module.exports = {
     let addresses = [];
     for(let i = 0; i < 5; i++){
       addresses.push({
-        cep: faker.address.zipCode(),
+        cep: (faker.address.zipCode()).replace('-', ''),
         state: faker.address.stateAbbr(),
         city: faker.address.city(),
         district: faker.address.streetPrefix(),

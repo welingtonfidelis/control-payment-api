@@ -80,10 +80,10 @@ module.exports = {
     },
 
     async get(req, res) {
-        const { UserId } = req.body, { id } = req.params, action = 'SELEC TAXPAYER';
+        const { UserId } = req.body, { id } = req.params, action = 'SELECT TAXPAYER';
 
         try {
-            const query = await Taxpayer.findAll({
+            const query = await Taxpayer.findOne({
                 where: { id },
                 attributes: [
                     "id", "name", "email", "phone1",
@@ -194,7 +194,7 @@ module.exports = {
 let schema = yup.object().shape({
     name: yup.string().required(),
     email: yup.string().email().required(),
-    phone1: yup.string().min(8).required(),
-    phone2: yup.string().min(8).required(),
+    phone1: yup.string().min(9).required(),
+    phone2: yup.string().min(9),
     birth: yup.date().required()
 });
