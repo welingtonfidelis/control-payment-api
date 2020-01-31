@@ -36,7 +36,7 @@ module.exports = {
           res.status(200).send({ status: true, response: query, code: 20 });
         } catch (error) {
           const err = error.stack || error.errors || error.message || error;
-          UtilController.saveLogError(action, err, UserId)
+          Util.saveLogError(action, err, UserId)
           res.status(500).send({ status: false, response: err, code: 22 })
         }
       },

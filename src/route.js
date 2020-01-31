@@ -6,6 +6,7 @@ const jwt = require('jsonwebtoken');
 const UserController = require('./controllers/UserController');
 const TaxpayerController = require('./controllers/TaxpayerController');
 const AddressController = require('./controllers/AddressController');
+const DonationController = require('./controllers/DonationController');
 
 //login
 routes.post('/user/login', UserController.login);
@@ -62,7 +63,25 @@ routes.delete('/taxpayer/:id', (req, res) => {
 //Endereço
 routes.get('/address/state', (req, res) => {
     AddressController.getState(req, res);
-})
+});
+
+//Doações
+routes.post('/donation', (req, res) => {
+    DonationController.create(req, res);
+});
+routes.get('/donation', (req, res) => {
+    DonationController.getAll(req, res);
+});
+routes.get('/donation/:id', (req, res) => {
+    DonationController.get(req, res);
+});
+routes.put('/donation/:id', (req, res) => {
+    DonationController.update(req, res);
+});
+routes.delete('/donation/:id', (req, res) => {
+    DonationController.delete(req, res);
+});
+
 //Validação de Token para continuar a executar requizição
 function verifyJWT(req, res, next) {
     let token = req.headers['token']
