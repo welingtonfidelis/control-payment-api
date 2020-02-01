@@ -7,6 +7,7 @@ const UserController = require('./controllers/UserController');
 const TaxpayerController = require('./controllers/TaxpayerController');
 const AddressController = require('./controllers/AddressController');
 const DonationController = require('./controllers/DonationController');
+const ReceiveController = require('./controllers/ReceiveController');
 
 //login
 routes.post('/user/login', UserController.login);
@@ -81,6 +82,13 @@ routes.put('/donation/:id', (req, res) => {
 routes.delete('/donation/:id', (req, res) => {
     DonationController.delete(req, res);
 });
+
+//Pagamentos à receber
+routes.get('/receive/month', (req, res) => {
+    ReceiveController.getAllMonth(req, res);
+});
+
+
 
 //Validação de Token para continuar a executar requizição
 function verifyJWT(req, res, next) {

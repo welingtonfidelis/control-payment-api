@@ -1,5 +1,4 @@
 const Util = require('../services/Util');
-const { Op } = require('sequelize');
 const yup = require('yup');
 
 const AddressController = require('./AddressController');

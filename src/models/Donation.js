@@ -3,7 +3,6 @@ module.exports = (sequelize, DataTypes) => {
         value: DataTypes.REAL,
         paidIn: DataTypes.DATE,
         observation: DataTypes.STRING,
-        password: DataTypes.STRING,
         deletedAt: DataTypes.DATE,
         TaxpayerId: DataTypes.INTEGER
     },
