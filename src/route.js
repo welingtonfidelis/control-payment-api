@@ -87,6 +87,12 @@ routes.delete('/donation/:id', (req, res) => {
 routes.get('/receive/month', (req, res) => {
     ReceiveController.getAllMonth(req, res);
 });
+routes.get('/receive/bydate', (req, res) => {
+    ReceiveController.getByDate(req, res);
+});
+routes.get('/receive/bytaxpayer', (req, res) => {
+    ReceiveController.getByTaxpayer(req, res);
+});
 
 
 
