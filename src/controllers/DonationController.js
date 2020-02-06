@@ -1,3 +1,5 @@
+const { Op } = require('sequelize');
+
 const { Donation } = require('../models');
 const { Taxpayer } = require('../models');
 const { Address } = require('../models');
@@ -53,6 +55,39 @@ module.exports = {
                         "complement", "number"
                     ]
                 }],
+            }],
+          });
+    
+          res.status(200).send({ status: true, response: query, code: 20 });
+        } catch (error) {
+          const err = error.stack || error.errors || error.message || error;
+          Util.saveLogError(action, err, UserId)
+          res.status(500).send({ status: false, response: err, code: 22 })
+        }
+      },
+
+    async getAllMonth(req, res) {
+        const { UserId } = req.body, action = 'SELECT ALL DONATIONS MONTH';
+
+        const date = new Date(), y = date.getFullYear(), m = date.getMonth();
+        const firstDay = new Date(y, m, 1);
+        const lastDay = new Date(y, m + 1, 0);
+
+        try {            
+          const query = await Donation.findAll({
+            where: {
+                paidIn: {[Op.between]: [firstDay, lastDay]}
+            },
+            attributes: [
+              "id", "value", "paidIn", "createdAt"
+            ],
+            order: [['paidIn', 'ASC']],
+            include: [{
+                model: Taxpayer,
+                attributes: [
+                    "id", "name", "phone1",
+                    "phone2"
+                ]
             }],
           });
     

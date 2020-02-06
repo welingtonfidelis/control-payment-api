@@ -73,6 +73,9 @@ routes.post('/donation', (req, res) => {
 routes.get('/donation', (req, res) => {
     DonationController.getAll(req, res);
 });
+routes.get('/donation/bymonth', (req, res) => {
+    DonationController.getAllMonth(req, res);
+});
 routes.get('/donation/:id', (req, res) => {
     DonationController.get(req, res);
 });
@@ -102,10 +105,10 @@ function verifyJWT(req, res, next) {
 
     //let usr_id = req.headers['usr_id']
 
-    if (!token) return res.status(401).send({ status: false, response: 'no token', code: 401 });
+    if (!token) return res.status(200).send({ status: false, response: 'no token', code: 401 });
 
     jwt.verify(token, process.env.SECRET, function (err, decoded) {
-        if (err) return res.status(401).send({ status: false, response: 'invalid token', code: 402 });
+        if (err) return res.status(200).send({ status: false, response: 'invalid token', code: 402 });
         req.body.UserId = decoded.id
         //if (usr_id != decoded.usr_id) {
         //    return res.status(500).send({ status: false, response: 'invalid user' });
@@ -117,6 +120,8 @@ function verifyJWT(req, res, next) {
 }
 
 //-------- CÓDIGOS INTERNOS DE RESPOSTAS AO USUÁRIO ----------//
+//401 sem token para validação de rota
+//402 token inválido para validação de rota
 
 //10 login efetuado com sucesso
 //11 erro login - usuario/email incorreto (não existe no banco)
