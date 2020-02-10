@@ -132,9 +132,11 @@ module.exports = {
     },
 
     async getByTaxpayer(req, res) {
-        let { UserId } = req.body, { arrayTaxpayerId } = req.body,
+        let { UserId } = req.body, { arrayTaxpayerId } = req.query,
             action = 'SELECT BYTAXPAYER RECEIVEMENT MONTH';
-       
+            
+            arrayTaxpayerId = JSON.parse(arrayTaxpayerId);
+
         try {
             let query = await Donation.findAll({
                 where: {
@@ -151,9 +153,8 @@ module.exports = {
                 const index = arrayTaxpayerId.findIndex((elem) => {
                     return elem == TaxpayerId
                 })
-                
-                arrayTaxpayerId.splice(index, 1);
-                
+
+                if(index > 0) arrayTaxpayerId.splice(index, 1);
             });
 
             query = await Taxpayer.findAll({
