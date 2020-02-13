@@ -75,6 +75,28 @@ module.exports = {
         res.status(200).send({ status: true, response: resp, code: 20 });
     },
 
+    async getByDate(req, res) {
+        const { UserId } = req.body, { start, end } = req.query,
+            action = 'SELECT DONATION BYDATE';
+
+        try {
+            const query = await Donation.findAll({
+                where: {
+                    paidIn: {[Op.between]: [start, end]}
+                },
+                attributes: ['TaxpayerId', 'value', 'paidIn'],
+                order: [['paidIn', 'ASC']],
+            })
+            
+            res.status(200).send({ status: true, response: query, code: 20 });
+
+        } catch (error) {
+          const err = error.stack || error.errors || error.message || error;
+          Util.saveLogError(action, err, UserId)
+          res.status(500).send({ status: false, response: err, code: 22 })
+        }
+    },
+
     async get(req, res) {
         const { UserId } = req.body, { id } = req.params, action = 'SELECT DONATION';
 

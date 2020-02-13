@@ -15,7 +15,7 @@ app.use(cors())
 app.use('/api', require('./src/route'))
 
 app.listen(port, function () {
-    console.log(`Servidor rodando na porta ${port}\n\n`);
+    console.log(`Server running in ${port}\n\n`);
 });
 
 //inicia rotina: email de lembrete de contribuição próxima

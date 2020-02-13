@@ -21,7 +21,7 @@ dateFormat.i18n = {
 
 module.exports = {
     sendEmailReminder() {
-        console.log('Run routine email reminder');
+        console.log('Routine running -> mail reminder ');
 
         //executa a verificação assim que a rotina é iniciada
         // searchTaxpayer();

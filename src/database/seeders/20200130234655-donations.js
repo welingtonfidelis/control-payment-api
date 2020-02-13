@@ -8,13 +8,13 @@ module.exports = {
 
     //gera clientes aleatórios
     let donations = [];
-    for (let i = 1; i <= 2; i++) {
+    for (let i = 1; i <= 15; i++) {
       donations.push(
         {
           value: faker.finance.amount(20, 100),
-          observation: faker.lorem.text(),
-          paidIn: new Date(),
-          TaxpayerId: i,
+          observation: faker.lorem.sentence(10),
+          paidIn: faker.date.between('2019-11-01', '2020-02-29'),
+          TaxpayerId: Math.floor((Math.random() * 5) + 1),
           createdAt: new Date(),
           updatedAt: new Date()
         }

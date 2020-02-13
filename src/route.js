@@ -76,6 +76,9 @@ routes.get('/donation', (req, res) => {
 routes.get('/donation/bymonth', (req, res) => {
     DonationController.getAllMonth(req, res);
 });
+routes.get('/donation/bydate', (req, res) => {
+    DonationController.getByDate(req, res);
+});
 routes.get('/donation/:id', (req, res) => {
     DonationController.get(req, res);
 });
