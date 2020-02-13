@@ -1,4 +1,5 @@
 const Util = require('../services/Util');
+const { Op } = require('sequelize');
 const yup = require('yup');
 
 const AddressController = require('./AddressController');
@@ -134,17 +135,91 @@ module.exports = {
         }
     },
 
-    async update(req, res) {        
+    async getByExpiratioWeek(UserId, arrayTaxpayerId) {
+        const action = 'GET TAXPAYER BY EXPIRATION WEEK', today = new Date();
+        let query = [];
+
+        try {
+            query = await Taxpayer.findAll({
+                where: {
+                    '$Payment.expiration$': { [Op.lte]: today.getDate() + 7 },
+                    [Op.and]: {
+                        ['$Taxpayer.id$']: { [Op.notIn]: arrayTaxpayerId }
+                    }
+                },
+                attributes: [
+                    "id", "name", "email", "phone1",
+                    "phone2", "birth", "createdAt"
+                ],
+                order: [['name', 'ASC']],
+                include: [
+                    {
+                        model: Payment,
+                        attributes: [
+                            "id", "value", "expiration"
+                        ],
+                        as: 'Payment'
+                    }
+                ],
+            });
+
+
+        } catch (error) {
+            const err = error.stack || error.errors || error.message || error;
+            Util.saveLogError(action, err, UserId);
+        }
+        return query;
+    },
+
+    async getByExpiratioEqualDate(UserId, arrayTaxpayerId, obj) {
+        const action = 'GET TAXPAYER BY EXPIRATION EQUAL DATE', today = new Date();
+        const { first, second } = obj;
+        let query = [];
+
+        try {
+            query = await Taxpayer.findAll({
+                where: {
+                    ['$Taxpayer.id$']: { [Op.notIn]: arrayTaxpayerId },
+                    [Op.or]: [
+                        {'$Payment.expiration$': { [Op.eq]: today.getDate() + first }},
+                        {'$Payment.expiration$': { [Op.eq]: today.getDate() + second }}                      
+                    ],
+                },
+                attributes: [
+                    "id", "name", "email", "phone1",
+                    "phone2", "birth", "createdAt"
+                ],
+                order: [['name', 'ASC']],
+                include: [
+                    {
+                        model: Payment,
+                        attributes: [
+                            "id", "value", "expiration"
+                        ],
+                        as: 'Payment'
+                    }
+                ],
+            });
+
+
+        } catch (error) {
+            const err = error.stack || error.errors || error.message || error;
+            Util.saveLogError(action, err, UserId);
+        }
+        return query;
+    },
+
+    async update(req, res) {
         const { taxpayer, UserId } = req.body, { id } = req.params, action = 'UPDATE TAXPAYER';
 
         if (await schema.isValid(taxpayer)) {
             try {
                 //atualiza endereço
                 await AddressController.update(req, res);
-         
+
                 //atualiza pagamento recorrente
                 await PaymentController.update(req, res);
-              
+
                 const query = await Taxpayer.update(
                     taxpayer,
                     {

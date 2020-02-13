@@ -1,8 +1,9 @@
 const express = require('express');
 const cors = require('cors')
 const port = 3001
-
 const app = express();
+
+const routine = require('./src/services/Routine');
 
 //Aceita dados do tipo json
 app.use(express.json())
@@ -14,5 +15,8 @@ app.use(cors())
 app.use('/api', require('./src/route'))
 
 app.listen(port, function () {
-    console.log(`Servidor rodando na porta ${port}`);
+    console.log(`Servidor rodando na porta ${port}\n\n`);
 });
+
+//inicia rotina: email de lembrete de contribuição próxima
+routine.sendEmailReminder();
