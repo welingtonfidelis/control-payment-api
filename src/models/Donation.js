@@ -16,7 +16,8 @@ module.exports = (sequelize, DataTypes) => {
         });
     Donation.associate = function (models) {
         Donation.belongsTo(models.Taxpayer, {
-            foreingKey: 'TaxpayerId'
+            foreingKey: 'TaxpayerId',
+            onDelete: 'cascade'
         });
     }
 

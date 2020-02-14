@@ -186,7 +186,7 @@ module.exports = {
         try {
             let query = await Donation.findAll({
                 where: {
-                    paidIn: { [Op.between]: [firstDay, lastDay] }
+                    paidIn: { [Op.between]: [firstDay, lastDay] },
                 },
                 attributes: [
                     "id", "value", "paidIn", "createdAt"
@@ -194,15 +194,16 @@ module.exports = {
                 order: [['paidIn', 'ASC']],
                 include: [{
                     model: Taxpayer,
-                    attributes: ["id"]
+                    attributes: ["id"],
+                    as: 'Taxpayer'
                 }],
             });
 
             resp['donation'] = query;
-
+            
             const arrayTaxpayerId = query.map(el => {
                 const { Taxpayer } = el;
-                return Taxpayer.id;
+                if(Taxpayer) return Taxpayer.id;
             })
             
             //chamada server/side

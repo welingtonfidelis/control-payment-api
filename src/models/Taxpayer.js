@@ -22,10 +22,10 @@ module.exports = (sequelize, DataTypes) => {
             foreingKey: 'AddressId',
             onDelete: 'cascade'
         }),
-            Taxpayer.belongsTo(models.Payment, {
-                foreingKey: 'PaymentId',
-                onDelete: 'cascade'
-            })
+        Taxpayer.belongsTo(models.Payment, {
+            foreingKey: 'PaymentId',
+            onDelete: 'cascade'
+        })
     }
 
     return Taxpayer;
