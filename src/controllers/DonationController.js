@@ -97,6 +97,37 @@ module.exports = {
         }
     },
 
+    async getByTaxpayer(req, res) {
+        let { UserId } = req.body, { start, end, arrayTaxpayerId } = req.query,
+            action = 'SELECT DONATION BYTAXPAYER';
+
+        arrayTaxpayerId = JSON.parse(arrayTaxpayerId);
+
+        try {
+            const query = await Donation.findAll({
+                where: {
+                    paidIn: {[Op.between]: [start, end]},
+                    '$Taxpayer.id$': {[Op.in]: arrayTaxpayerId}
+                },
+                attributes: ['id', 'TaxpayerId', 'value', 'paidIn', 'observation'],
+                order: [['TaxpayerId', 'ASC']],
+                include: [{
+                    model: Taxpayer,
+                    attributes: [
+                        "id", "name"
+                    ]
+                }]
+            })
+            
+            res.status(200).send({ status: true, response: query, code: 20 });
+
+        } catch (error) {
+          const err = error.stack || error.errors || error.message || error;
+          Util.saveLogError(action, err, UserId)
+          res.status(500).send({ status: false, response: err, code: 22 })
+        }
+    },
+
     async get(req, res) {
         const { UserId } = req.body, { id } = req.params, action = 'SELECT DONATION';
 
