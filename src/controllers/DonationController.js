@@ -37,7 +37,7 @@ module.exports = {
         const { UserId } = req.body, action = 'SELECT ALL DONATIONS';
 
         try {
-            const query = await Donation.findAll({
+            let query = await Donation.findAll({
                 where: {},
                 attributes: [
                     "id", "value", "paidIn", "observation", "createdAt"
@@ -59,6 +59,8 @@ module.exports = {
                     }],
                 }],
             });
+
+            query = validadeDonations(query);
 
             res.status(200).send({ status: true, response: query, code: 20 });
         } catch (error) {
@@ -82,18 +84,18 @@ module.exports = {
         try {
             const query = await Donation.findAll({
                 where: {
-                    paidIn: {[Op.between]: [start, end]}
+                    paidIn: { [Op.between]: [start, end] }
                 },
                 attributes: ['TaxpayerId', 'value', 'paidIn'],
                 order: [['paidIn', 'ASC']],
             })
-            
+
             res.status(200).send({ status: true, response: query, code: 20 });
 
         } catch (error) {
-          const err = error.stack || error.errors || error.message || error;
-          Util.saveLogError(action, err, UserId)
-          res.status(500).send({ status: false, response: err, code: 22 })
+            const err = error.stack || error.errors || error.message || error;
+            Util.saveLogError(action, err, UserId)
+            res.status(500).send({ status: false, response: err, code: 22 })
         }
     },
 
@@ -106,8 +108,8 @@ module.exports = {
         try {
             const query = await Donation.findAll({
                 where: {
-                    paidIn: {[Op.between]: [start, end]},
-                    '$Taxpayer.id$': {[Op.in]: arrayTaxpayerId}
+                    paidIn: { [Op.between]: [start, end] },
+                    '$Taxpayer.id$': { [Op.in]: arrayTaxpayerId }
                 },
                 attributes: ['id', 'TaxpayerId', 'value', 'paidIn', 'observation'],
                 order: [['TaxpayerId', 'ASC']],
@@ -118,13 +120,13 @@ module.exports = {
                     ]
                 }]
             })
-            
+
             res.status(200).send({ status: true, response: query, code: 20 });
 
         } catch (error) {
-          const err = error.stack || error.errors || error.message || error;
-          Util.saveLogError(action, err, UserId)
-          res.status(500).send({ status: false, response: err, code: 22 })
+            const err = error.stack || error.errors || error.message || error;
+            Util.saveLogError(action, err, UserId)
+            res.status(500).send({ status: false, response: err, code: 22 })
         }
     },
 
@@ -132,7 +134,7 @@ module.exports = {
         const { UserId } = req.body, { id } = req.params, action = 'SELECT DONATION';
 
         try {
-            const query = await Donation.findOne({
+            let query = await Donation.findOne({
                 where: { id },
                 attributes: [
                     "id", "value", "paidIn", "observation", "createdAt"
@@ -207,7 +209,7 @@ module.exports = {
         }
     },
 
-    async returnDonationReceive(UserId, res = null, obj = null){
+    async returnDonationReceive(UserId, res = null, obj = null) {
         const action = 'SELECT ALL DONATIONS MONTH';
 
         const today = new Date(), y = today.getFullYear(), m = today.getMonth();
@@ -230,15 +232,17 @@ module.exports = {
                 }],
             });
 
+            query = validadeDonations(query);
+
             resp['donation'] = query;
-            
+
             const arrayTaxpayerId = query.map(el => {
                 const { Taxpayer } = el;
-                if(Taxpayer) return Taxpayer.id;
+                if (Taxpayer) return Taxpayer.id;
             })
-            
+
             //chamada server/side
-            if(obj){
+            if (obj) {
                 query = await TaxpayerController.getByExpiratioEqualDate(UserId, arrayTaxpayerId, obj)
             }
             //chamada client/side
@@ -251,7 +255,7 @@ module.exports = {
         } catch (error) {
             const err = error.stack || error.errors || error.message || error;
             Util.saveLogError(action, err, UserId)
-            if(res) res.status(500).send({ status: false, response: err, code: 22 });
+            if (res) res.status(500).send({ status: false, response: err, code: 22 });
         }
         return resp;
     }
@@ -262,6 +266,16 @@ function validValues(obj) {
     obj.observation = obj.observation === '' ? null : obj.observation;
 
     return obj;
+}
+
+//envia ao usuário doações feitas apenas por contribuintes
+//não excluidos do sistema (solução temporária -> corrigir com query no bd)
+function validadeDonations(array) {
+    array = array.filter(el => {
+        if (el.Taxpayer) return el;
+    });
+
+    return array;
 }
 
 //validação de campos
