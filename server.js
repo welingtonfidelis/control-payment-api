@@ -14,7 +14,7 @@ app.use(cors());
 //roteamento
 app.use('/api', require('./src/route'));
 
-app.listen(port, function () {
+app.listen(process.env.PORT || port, function () {
     console.log(`Server running in ${port}\n\n`);
 });
 
