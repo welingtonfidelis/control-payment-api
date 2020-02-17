@@ -6,13 +6,13 @@ const app = express();
 const routine = require('./src/services/Routine');
 
 //Aceita dados do tipo json
-app.use(express.json())
+app.use(express.json());
 
 //permite acesso à api de qualquer dominio 
-app.use(cors())
+app.use(cors());
 
 //roteamento
-app.use('/api', require('./src/route'))
+app.use('/api', require('./src/route'));
 
 app.listen(port, function () {
     console.log(`Server running in ${port}\n\n`);
