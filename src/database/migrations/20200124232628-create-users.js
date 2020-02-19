@@ -31,6 +31,10 @@ module.exports = {
         allowNull: false,
         type: Sequelize.STRING
       },
+      isAdm: {
+        allowNull: true,
+        type: Sequelize.BOOLEAN
+      },
       birth: {
         allowNull: false,
         type: Sequelize.DATE

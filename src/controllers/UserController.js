@@ -22,16 +22,20 @@ module.exports = {
                 where: {
                     [Op.or]: [{ user }, { email: user }]
                 },
-                attributes: ['id', 'name', 'password']
+                attributes: ['id', 'name', 'password', 'isAdm']
             });
 
             if (query) {
-                const { id, name } = query, hash = query.password;
+                const { id, name, isAdm } = query, hash = query.password;
 
                 const isValid = await bcrypt.compareSync(password, hash);
 
                 if (isValid) {
-                    const token = jwt.sign({ id }, process.env.SECRET, {
+                    //qualifica usuário como adm ou comum
+                    let crypt = isAdm ? '#isAdm@' : '#notAdm@';                    
+                    crypt = bcrypt.hashSync(crypt, saltRounds);
+
+                    const token = jwt.sign({ id, isAdm: crypt }, process.env.SECRET, {
                         //expiresIn: "12h"
                     })
 
@@ -39,7 +43,7 @@ module.exports = {
                     res.status(200).send(
                         {
                             status: true,
-                            response: { token, id, name },
+                            response: { token, id, name, isAdm: crypt },
                             code: 10
                         })
                 }
@@ -105,7 +109,7 @@ module.exports = {
             const query = await User.findAll({
                 where: {},
                 attributes: [
-                    "id", "name", "email", "phone", "user", "createdAt"
+                    "id", "name", "email", "phone", "user", "isAdm", "createdAt"
                 ],
                 order: [['name', 'ASC']],
                 include: [{
@@ -135,7 +139,7 @@ module.exports = {
                 where: { id },
                 attributes: [
                     "id", "name", "email", "phone",
-                    "user", "birth", "createdAt"
+                    "user", "birth","isAdm", "createdAt"
                 ],
                 include: [{
                     model: Address,
@@ -256,7 +260,7 @@ module.exports = {
         try {
             const query = await User.destroy({
                 where: {
-                    id
+                    [Op.not]: {id: UserId}, id
                 }
             });
 

@@ -14,7 +14,7 @@ module.exports = {
           allowNull: false
         },
         expiration: {
-          type: Sequelize.INTEGER(2),
+          type: Sequelize.INTEGER,
           allowNull: false
         },
         createdAt: {

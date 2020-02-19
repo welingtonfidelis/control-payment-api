@@ -15,8 +15,6 @@ module.exports = {
         }
     },
     saveLogInfo(action = '', UserId = 0) {
-        console.log(UserId);
-        
         try {
             LogInfo.create({
                 action, UserId
