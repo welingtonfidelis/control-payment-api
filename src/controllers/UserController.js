@@ -8,6 +8,7 @@ require('dotenv-safe').config()
 const jwt = require('jsonwebtoken');
 
 const AddressController = require('./AddressController');
+const OngController = require('./OngController');
 
 const { User } = require('../models');
 const { Address } = require('../models');
@@ -22,20 +23,25 @@ module.exports = {
                 where: {
                     [Op.or]: [{ user }, { email: user }]
                 },
-                attributes: ['id', 'name', 'password', 'isAdm']
+                attributes: ['id', 'name', 'password', 'isAdm', 'OngId']
             });
 
             if (query) {
-                const { id, name, isAdm } = query, hash = query.password;
+                const { id, name, isAdm, OngId } = query, hash = query.password;
 
                 const isValid = await bcrypt.compareSync(password, hash);
-
+                
                 if (isValid) {
+                    //Recupera informações sobre a ong que o usuário pertence
+                    const Ong = await OngController.getLogo(req, OngId);                
+                    const nameOng = Ong.name ? Ong.name : 'Ong Não identificada';
+                    const logoOng = Ong.logo ? Ong.logo : 'logo';
+
                     //qualifica usuário como adm ou comum
-                    let crypt = isAdm ? '#isAdm@' : '#notAdm@';                    
+                    let crypt = isAdm ? '#isAdm@' : '#notAdm@';
                     crypt = bcrypt.hashSync(crypt, saltRounds);
 
-                    const token = jwt.sign({ id, isAdm: crypt }, process.env.SECRET, {
+                    const token = jwt.sign({ id, isAdm: crypt, OngId }, process.env.SECRET, {
                         //expiresIn: "12h"
                     })
 
@@ -43,7 +49,7 @@ module.exports = {
                     res.status(200).send(
                         {
                             status: true,
-                            response: { token, id, name, isAdm: crypt },
+                            response: { token, id, name, isAdm: crypt, nameOng, logoOng },
                             code: 10
                         })
                 }
@@ -76,7 +82,7 @@ module.exports = {
     },
 
     async create(req, res) {
-        const { user, UserId } = req.body, action = 'CREATE USER';
+        const { user, UserId, OngId } = req.body, action = 'CREATE USER';
 
         if (await schema.isValid(user)) {
             try {
@@ -84,10 +90,14 @@ module.exports = {
                 const { id } = await AddressController.create(req, res);
                 //insere id do novo endereço
                 user.AddressId = id;
+                
+                //inclui id da ong, com base no usuário logado (token)
+                user.OngId = OngId;
 
                 //criptografa senha 
                 user.password = bcrypt.hashSync(user.password, saltRounds);
                 const query = await User.create(user);
+
 
                 Util.saveLogInfo(action, UserId)
                 res.status(200).send({ status: true, response: query, code: 20 });
@@ -103,11 +113,11 @@ module.exports = {
     },
 
     async getAll(req, res) {
-        const { UserId } = req.body, action = 'SELECT ALL USERS'
+        const { UserId, OngId } = req.body, action = 'SELECT ALL USERS'
 
         try {
             const query = await User.findAll({
-                where: {},
+                where: {OngId},
                 attributes: [
                     "id", "name", "email", "phone", "user", "isAdm", "createdAt"
                 ],
@@ -139,7 +149,7 @@ module.exports = {
                 where: { id },
                 attributes: [
                     "id", "name", "email", "phone",
-                    "user", "birth","isAdm", "createdAt"
+                    "user", "birth", "isAdm", "createdAt"
                 ],
                 include: [{
                     model: Address,
@@ -260,7 +270,7 @@ module.exports = {
         try {
             const query = await User.destroy({
                 where: {
-                    [Op.not]: {id: UserId}, id
+                    [Op.not]: { id: UserId }, id
                 }
             });
 

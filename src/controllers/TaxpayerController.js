@@ -8,10 +8,11 @@ const PaymentController = require('./PaymentController');
 const { Taxpayer } = require('../models');
 const { Address } = require('../models');
 const { Payment } = require('../models');
+const { Ong } = require('../models');
 
 module.exports = {
     async create(req, res) {
-        const { taxpayer, UserId } = req.body, action = 'CREATE TAXPAYER';
+        const { taxpayer, UserId, OngId } = req.body, action = 'CREATE TAXPAYER';
 
         if (await schema.isValid(taxpayer)) {
             try {
@@ -24,6 +25,9 @@ module.exports = {
                 const PaymentId = (await PaymentController.create(req, res)).id;
                 //insere id do novo pagamento
                 taxpayer.PaymentId = PaymentId;
+
+                //inclui id da ong, com base no usuário logado (token)
+                taxpayer.OngId = OngId;
 
                 const query = await Taxpayer.create(taxpayer);
 
@@ -42,11 +46,11 @@ module.exports = {
     },
 
     async getAll(req, res) {
-        const { UserId } = req.body, action = 'SELECT ALL TAXPAYER';
+        const { UserId, OngId } = req.body, action = 'SELECT ALL TAXPAYER';
 
         try {
             const query = await Taxpayer.findAll({
-                where: {},
+                where: {OngId},
                 attributes: [
                     "id", "name", "email", "phone1",
                     "phone2", "birth", "createdAt"
@@ -135,7 +139,7 @@ module.exports = {
         }
     },
 
-    async getByExpiratioWeek(UserId, arrayTaxpayerId) {
+    async getByExpiratioWeek(UserId, OngId, arrayTaxpayerId) {
         const action = 'GET TAXPAYER BY EXPIRATION WEEK', today = new Date();
         let query = [];
 
@@ -144,7 +148,8 @@ module.exports = {
                 where: {
                     '$Payment.expiration$': { [Op.lte]: today.getDate() + 7 },
                     [Op.and]: {
-                        ['$Taxpayer.id$']: { [Op.notIn]: arrayTaxpayerId }
+                        ['$Taxpayer.id$']: { [Op.notIn]: arrayTaxpayerId },
+                        ['$Taxpayer.OngId$']: OngId
                     }
                 },
                 attributes: [
@@ -197,6 +202,14 @@ module.exports = {
                             "id", "value", "expiration"
                         ],
                         as: 'Payment'
+                    },
+                    {
+                        model: Ong,
+                        attributes: [
+                            "id", "name", "cnpj", "email",
+                            "statelaw", "municipallaw", "logo"
+                        ],
+                        as: 'Ong'
                     }
                 ],
             });

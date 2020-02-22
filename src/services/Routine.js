@@ -41,11 +41,12 @@ async function searchTaxpayer() {
 
     console.log(`\n${dthr} start routine`);
 
-    const resp = await DonationController.returnDonationReceive(1, null, { first: 2, second: 7 });
+    const resp = await DonationController.returnDonationReceive(1, null, null, { first: 2, second: 7 });
     const { taxpayer } = resp;
 
     taxpayer.forEach(el => {
         const { Payment } = el;
+        const { Ong } = el;
 
         const msg = `
             <h4>Olá ${el.name}.</h4>
@@ -54,12 +55,15 @@ async function searchTaxpayer() {
                 que sua contribuição de R$${Payment.value} do mês de ${month} 
                 está próxima de vencer (dia ${Payment.expiration}).
                 </p>
-                Agradecemos muito pela sua contribuição mensal e gostariamos de
+                Agradecemos muito pela sua contribuição mensal e gostaríamos de
                 ressaltar o quanto ela ajuda a salvar muitos animais em situação de 
                 risco e vulnerabilidade.
                 </p>
 
-                Atenciosamente, <strong>ONG Patas Amigas</strong>.
+                <br><br>
+                Atenciosamente, <strong>${Ong.name}</strong>.
+                <br>
+                <img style="width: 80px" src="${Ong.logo}" alt="OngLogo"/>
             </div> `;
 
         sendEmail(month, el.email, msg);

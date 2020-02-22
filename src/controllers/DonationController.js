@@ -12,7 +12,7 @@ const yup = require('yup');
 
 module.exports = {
     async create(req, res) {
-        let { donation, UserId } = req.body, action = 'CREATE DONATION';
+        let { donation, UserId, OngId } = req.body, action = 'CREATE DONATION';
 
         if (await schema.isValid(donation)) {
             donation = validValues(donation);
@@ -34,11 +34,11 @@ module.exports = {
     },
 
     async getAll(req, res) {
-        const { UserId } = req.body, action = 'SELECT ALL DONATIONS';
+        const { UserId, OngId } = req.body, action = 'SELECT ALL DONATIONS';
 
         try {
             let query = await Donation.findAll({
-                where: {},
+                where: {'$Taxpayer.OngId$': OngId},
                 attributes: [
                     "id", "value", "paidIn", "observation", "createdAt"
                 ],
@@ -60,7 +60,7 @@ module.exports = {
                 }],
             });
 
-            query = validadeDonations(query);
+            query = validateDonations(query);
 
             res.status(200).send({ status: true, response: query, code: 20 });
         } catch (error) {
@@ -71,23 +71,29 @@ module.exports = {
     },
 
     async getAllMonth(req, res) {
-        const { UserId } = req.body;
+        const { UserId, OngId } = req.body;
 
-        const resp = await this.returnDonationReceive(UserId, res);
+        const resp = await this.returnDonationReceive(UserId, OngId, res);
         res.status(200).send({ status: true, response: resp, code: 20 });
     },
 
     async getByDate(req, res) {
-        const { UserId } = req.body, { start, end } = req.query,
+        const { UserId, OngId } = req.body, { start, end } = req.query,
             action = 'SELECT DONATION BYDATE';
 
         try {
             const query = await Donation.findAll({
                 where: {
-                    paidIn: { [Op.between]: [start, end] }
+                    paidIn: { [Op.between]: [start, end] },
+                    '$Taxpayer.OngId$': OngId
                 },
                 attributes: ['TaxpayerId', 'value', 'paidIn'],
                 order: [['paidIn', 'ASC']],
+                include: [{
+                    model: Taxpayer,
+                    attributes: ["id"],
+                    as: 'Taxpayer'
+                }],
             })
 
             res.status(200).send({ status: true, response: query, code: 20 });
@@ -209,7 +215,7 @@ module.exports = {
         }
     },
 
-    async returnDonationReceive(UserId, res = null, obj = null) {
+    async returnDonationReceive(UserId, OngId = null, res = null, obj = null) {
         const action = 'SELECT ALL DONATIONS MONTH';
 
         const today = new Date(), y = today.getFullYear(), m = today.getMonth();
@@ -220,6 +226,7 @@ module.exports = {
             let query = await Donation.findAll({
                 where: {
                     paidIn: { [Op.between]: [firstDay, lastDay] },
+                    '$Taxpayer.OngId$': OngId
                 },
                 attributes: [
                     "id", "value", "paidIn", "createdAt"
@@ -232,7 +239,7 @@ module.exports = {
                 }],
             });
 
-            query = validadeDonations(query);
+            query = validateDonations(query);
 
             resp['donation'] = query;
 
@@ -247,7 +254,7 @@ module.exports = {
             }
             //chamada client/side
             else {
-                query = await TaxpayerController.getByExpiratioWeek(UserId, arrayTaxpayerId);
+                query = await TaxpayerController.getByExpiratioWeek(UserId, OngId, arrayTaxpayerId);
             }
 
             resp['taxpayer'] = query;
@@ -270,7 +277,7 @@ function validValues(obj) {
 
 //envia ao usuário doações feitas apenas por contribuintes
 //não excluidos do sistema (solução temporária -> corrigir com query no bd)
-function validadeDonations(array) {
+function validateDonations(array) {
     array = array.filter(el => {
         if (el.Taxpayer) return el;
     });

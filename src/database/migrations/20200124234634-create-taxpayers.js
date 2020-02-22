@@ -30,6 +30,14 @@ module.exports = {
           onDelete: 'cascade',
         }
       },
+      OngId: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        references: {
+          model: 'Ongs',
+          key: 'id'
+        }
+      },
       PaymentId: {
         type: Sequelize.INTEGER,
         allowNull: false,

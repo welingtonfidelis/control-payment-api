@@ -8,7 +8,7 @@ module.exports = {
 
     //gera clientes aleatórios
     let payments = [];
-    for (let i = 0; i < 5; i++) {
+    for (let i = 0; i < 10; i++) {
       payments.push(
         {
           value: faker.finance.amount(20, 500),

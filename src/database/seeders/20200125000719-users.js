@@ -2,38 +2,66 @@
 
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.bulkInsert({tableName: 'Users'}, 
-    [{
+    return queryInterface.bulkInsert({ tableName: 'Users' },
+      [{
         name: 'Administrador',
-        email: 'adm@email.com',
+        email: 'admpatas@email.com',
         phone: '98888888',
-        user: 'adm',
+        user: 'admpatas',
         birth: '1990-07-28 00:00:00',
-        password: '$2b$10$6db/DiUiPrL6umMQ6K3A4.7LYLtmQnhVqt/jzrsQRYNEOqcPhdDj6',
+        password: '$2b$10$fwHGMmA8TNv3vpg8lX9f3OkiOW7cK2zJ2gN0S2KcMVol6md.2Ndrm',
         isAdm: true,
-        AddressId: Math.floor(Math.random() * 5) + 1 ,
+        AddressId: Math.floor(Math.random() * 5) + 1,
+        OngId: 1,
         createdAt: new Date(),
         updatedAt: new Date()
       },
       {
         name: 'Usuário',
-        email: 'user@email.com',
+        email: 'userpatas@email.com',
         phone: '98888888',
-        user: 'user',
+        user: 'userpatas',
         birth: '1990-07-28 00:00:00',
-        password: '$2b$10$byUa1WlhUA9f0wSoiS/chefu3mmJomh/pLq24g.8u3EHRtIMjYiGC',
+        password: '$2b$10$lHkjpxN3ZC/NOFku5Jb9W.BepoTyvt1aYZRG5rwN/G4UVfu6QYuCS',
         isAdm: false,
-        AddressId: Math.floor(Math.random() * 5) + 1 ,
+        AddressId: Math.floor(Math.random() * 5) + 1,
+        OngId: 1,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      {
+        name: 'Administrador',
+        email: 'admsos@email.com',
+        phone: '98888888',
+        user: 'admsos',
+        birth: '1990-07-28 00:00:00',
+        password: '$2b$10$wPFElQjKzAC93CvbDYKOeONp2e7izoiBffX6Y22ynElDdg2KB..A.',
+        isAdm: true,
+        AddressId: Math.floor(Math.random() * 5) + 1,
+        OngId: 2,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      {
+        name: 'Usuário',
+        email: 'usersos@email.com',
+        phone: '98888888',
+        user: 'usersos',
+        birth: '1990-07-28 00:00:00',
+        password: '$2b$10$SMToPySxBvNqyGhYpVOeluTmjehuJKxI90MfsZ5ziOMEe9uBBWMtq',
+        isAdm: false,
+        AddressId: Math.floor(Math.random() * 5) + 1,
+        OngId: 2,
         createdAt: new Date(),
         updatedAt: new Date()
       }
-    ])
+      ])
   },
 
   down: (queryInterface, Sequelize) => {
-    return queryInterface.bulkDelete({tableName: 'Users'}, 
-    [{
-      AddressId: 1
-    }])
+    return queryInterface.bulkDelete({ tableName: 'Users' },
+      [{
+        AddressId: 1
+      }])
   }
 };

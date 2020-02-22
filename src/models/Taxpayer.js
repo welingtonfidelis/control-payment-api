@@ -6,6 +6,7 @@ module.exports = (sequelize, DataTypes) => {
         phone2: DataTypes.STRING,
         birth: DataTypes.DATE,
         AddressId: DataTypes.INTEGER,
+        OngId: DataTypes.INTEGER,
         PaymentId: DataTypes.INTEGER,
         deletedAt: DataTypes.DATE
     },
@@ -24,6 +25,10 @@ module.exports = (sequelize, DataTypes) => {
         }),
         Taxpayer.belongsTo(models.Payment, {
             foreingKey: 'PaymentId',
+            onDelete: 'cascade'
+        })
+        Taxpayer.belongsTo(models.Ong, {
+            foreingKey: 'OngId',
             onDelete: 'cascade'
         })
     }

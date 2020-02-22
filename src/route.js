@@ -117,6 +117,7 @@ function verifyJWT(req, res, next) {
         if (err) return res.status(200).send({ status: false, response: 'invalid token', code: 402 });
         req.body.UserId = decoded.id;
         req.body.isAdm = decoded.isAdm;
+        req.body.OngId = decoded.OngId;
         
         //if (usr_id != decoded.usr_id) {
         //    return res.status(500).send({ status: false, response: 'invalid user' });

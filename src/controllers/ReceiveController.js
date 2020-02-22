@@ -13,7 +13,7 @@ const lastDay = new Date(y, m + 1, 0);
 
 module.exports = {
     async getAllMonth(req, res) {
-        const { UserId } = req.body, action = 'SELECT ALL RECEIVEMENT MONTH';
+        const { UserId, OngId } = req.body, action = 'SELECT ALL RECEIVEMENT MONTH';
        
         try {
             let query = await Donation.findAll({
@@ -33,7 +33,8 @@ module.exports = {
                 where: {
                     '$Payment.expiration$': {[Op.lte]: 31},
                     [Op.and]: {
-                        ['$Taxpayer.id$']: {[Op.notIn]: arrayTaxpayerId}
+                        ['$Taxpayer.id$']: {[Op.notIn]: arrayTaxpayerId},
+                        ['$Taxpayer.OngId$']: OngId
                     }
                 },
                 attributes: [
@@ -71,7 +72,7 @@ module.exports = {
     },
 
     async getByDate(req, res) {
-        const { UserId } = req.body, { start, end } = req.query,
+        const { UserId, OngId } = req.body, { start, end } = req.query,
             action = 'SELECT BYDATE RECEIVEMENT MONTH',
             sDay = ((start).split('-'))[2], eDay = ((end).split('-'))[2];
 
@@ -93,8 +94,9 @@ module.exports = {
                 where: {
                     '$Payment.expiration$': {[Op.lte]: eDay},
                     [Op.and]: {
-                        ['$Taxpayer.id$']: {[Op.notIn]: arrayTaxpayerId},
-                        '$Payment.expiration$': {[Op.gte]: sDay}
+                        '$Taxpayer.id$': {[Op.notIn]: arrayTaxpayerId},
+                        '$Payment.expiration$': {[Op.gte]: sDay},
+                        '$Taxpayer.OngId$': OngId
                     }
                 },
                 attributes: [
