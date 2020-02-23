@@ -4,6 +4,7 @@ const { Donation } = require('../models');
 const { Taxpayer } = require('../models');
 const { Address } = require('../models');
 const { Payment } = require('../models');
+const { Ong } = require('../models');
 
 const Util = require('../services/Util');
 
@@ -58,6 +59,14 @@ module.exports = {
                             "id", "value", "expiration"
                         ],
                         as: 'Payment'
+                    },
+                    {
+                        model: Ong,
+                        attributes: [
+                            "id", "name", "cnpj", "email", 
+                            "statelaw", "municipallaw"
+                        ],
+                        as: 'Ong'
                     }
                 ],
             });
@@ -120,6 +129,14 @@ module.exports = {
                             "id", "value", "expiration"
                         ],
                         as: 'Payment'
+                    },
+                    {
+                        model: Ong,
+                        attributes: [
+                            "id", "name", "cnpj", "email", 
+                            "statelaw", "municipallaw"
+                        ],
+                        as: 'Ong'
                     }
                 ],
             });
@@ -187,6 +204,14 @@ module.exports = {
                             "id", "value", "expiration"
                         ],
                         as: 'Payment'
+                    },
+                    {
+                        model: Ong,
+                        attributes: [
+                            "id", "name", "cnpj", "email", 
+                            "statelaw", "municipallaw"
+                        ],
+                        as: 'Ong'
                     }
                 ],
             });

@@ -55,5 +55,7 @@ module.exports = {
 //validação de campos
 let schema = yup.object().shape({
     value: yup.number().required(),
-    expiration: yup.number().required()
+    expiration: yup.number().required(),
+    hourStart: yup.date().required(),
+    hourEnd: yup.date().required()
 });

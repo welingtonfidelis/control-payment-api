@@ -4,22 +4,22 @@ module.exports = {
   up: (queryInterface, Sequelize) => {
     return queryInterface.bulkInsert({tableName: 'Ongs'}, 
     [{
-        name: 'patas amigas',
-        email: 'patas@email.com',
+        name: 'Patas Amigas',
+        email: 'contatopatasamigas@hotmail.com',
         logo: 'https://docs.google.com/uc?export=download&id=1OkCtfLME_XS7pnNYzhYCvwcIxIVEYSau',
-        cnpj: '000.000.000/0001-00',
-        statelaw: '1.000/00',
-        municipallaw: '1.000/00',
+        cnpj: '023.778.707/0001-29',
+        statelaw: '22.321/16',
+        municipallaw: '1.965/95',
         createdAt: new Date(),
         updatedAt: new Date()
       },
       {
-        name: 'sos patas',
+        name: 'SOS Patas',
         email: 'sos@email.com',
         logo: 'https://docs.google.com/uc?export=download&id=1Jbr_aLjitHAMvqYiuyZ1AV-iFQX0URJ_',
-        cnpj: '000.000.000/0002-00',
-        statelaw: '2.000/00',
-        municipallaw: '2.000/00',
+        cnpj: '026.515.895/0001-90',
+        statelaw: null,
+        municipallaw: '3.486',
         createdAt: new Date(),
         updatedAt: new Date()
       }
