@@ -56,7 +56,7 @@ module.exports = {
                     {
                         model: Payment,
                         attributes: [
-                            "id", "value", "expiration"
+                            "id", "value", "expiration", "hourStart", "hourEnd"
                         ],
                         as: 'Payment'
                     },
@@ -126,7 +126,7 @@ module.exports = {
                     {
                         model: Payment,
                         attributes: [
-                            "id", "value", "expiration"
+                            "id", "value", "expiration", "hourStart", "hourEnd"
                         ],
                         as: 'Payment'
                     },
@@ -201,7 +201,7 @@ module.exports = {
                     {
                         model: Payment,
                         attributes: [
-                            "id", "value", "expiration"
+                            "id", "value", "expiration", "hourStart", "hourEnd"
                         ],
                         as: 'Payment'
                     },

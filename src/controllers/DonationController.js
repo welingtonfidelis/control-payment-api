@@ -91,7 +91,7 @@ module.exports = {
                 order: [['paidIn', 'ASC']],
                 include: [{
                     model: Taxpayer,
-                    attributes: ["id"],
+                    attributes: ["id", "name"],
                     as: 'Taxpayer'
                 }],
             })
@@ -234,7 +234,7 @@ module.exports = {
                 order: [['paidIn', 'ASC']],
                 include: [{
                     model: Taxpayer,
-                    attributes: ["id"],
+                    attributes: ["id", "name"],
                     as: 'Taxpayer'
                 }],
             });
