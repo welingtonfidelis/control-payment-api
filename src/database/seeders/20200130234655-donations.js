@@ -14,7 +14,7 @@ module.exports = {
           value: faker.finance.amount(20, 100),
           observation: faker.lorem.sentence(10),
           paidIn: faker.date.between('2019-11-01', '2020-02-29'),
-          TaxpayerId: Math.floor((Math.random() * 5) + 1),
+          TaxpayerId: Math.floor((Math.random() * 10) + 1),
           createdAt: new Date(),
           updatedAt: new Date()
         }

@@ -8,6 +8,7 @@ module.exports = (sequelize, DataTypes) => {
         password: DataTypes.STRING,
         isAdm: DataTypes.BOOLEAN,
         AddressId: DataTypes.INTEGER,
+        OngId: DataTypes.INTEGER,
         deletedAt: DataTypes.DATE
     },
         {
@@ -23,9 +24,13 @@ module.exports = (sequelize, DataTypes) => {
             foreingKey: 'AddressId',
             onDelete: 'cascade'
         }),
-            User.hasMany(models.LogInfo, {
-                foreingKey: 'UserId'
-            })
+        User.belongsTo(models.Ong, {
+            foreingKey: 'OngId',
+            onDelete: 'cascade'
+        }),
+        User.hasMany(models.LogInfo, {
+            foreingKey: 'UserId'
+        })
     }
 
     return User;

@@ -8,13 +8,17 @@ module.exports = {
 
     //gera clientes aleatórios
     let payments = [];
-    for (let i = 0; i < 5; i++) {
+    for (let i = 0; i < 10; i++) {
+      const now = new Date();
+
       payments.push(
         {
           value: faker.finance.amount(20, 500),
           expiration: faker.random.number(30),
-          createdAt: new Date(),
-          updatedAt: new Date()
+          hourStart: now,
+          hourEnd: now,
+          createdAt: now,
+          updatedAt: now
         }
       )
     }

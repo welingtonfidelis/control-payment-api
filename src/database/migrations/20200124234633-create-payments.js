@@ -17,6 +17,14 @@ module.exports = {
           type: Sequelize.INTEGER,
           allowNull: false
         },
+        hourStart: {
+          allowNull: false,
+          type: Sequelize.DATE
+        },
+        hourEnd: {
+          allowNull: false,
+          type: Sequelize.DATE
+        },
         createdAt: {
           allowNull: false,
           type: Sequelize.DATE

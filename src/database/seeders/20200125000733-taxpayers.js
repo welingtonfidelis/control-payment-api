@@ -11,13 +11,30 @@ module.exports = {
     for (let i = 0; i < 5; i++) {
       taxpayers.push(
         {
-          name: faker.name.findName(),
+          name: faker.name.findName() + ' PATAS',
           email: faker.internet.email(),
           birth: faker.date.past(),
           AddressId: Math.floor(Math.random() * 5) + 1 ,
           PaymentId: Math.floor(Math.random() * 5) + 1 ,
-          phone1: faker.phone.phoneNumber(),
-          phone2: faker.phone.phoneNumber(),
+          OngId: 1 ,
+          phone1: (faker.phone.phoneNumber()).replace(/\D/g, ''),
+          phone2: (faker.phone.phoneNumber()).replace(/\D/g, ''),
+          createdAt: new Date(),
+          updatedAt: new Date()
+        }
+      )
+    }
+    for (let i = 0; i < 5; i++) {
+      taxpayers.push(
+        {
+          name: faker.name.findName() + ' SOS',
+          email: faker.internet.email(),
+          birth: faker.date.past(),
+          AddressId: Math.floor(Math.random() * 5) + 1 ,
+          PaymentId: Math.floor(Math.random() * 5) + 1 ,
+          OngId: 2,
+          phone1: (faker.phone.phoneNumber()).replace(/\D/g, ''),
+          phone2: (faker.phone.phoneNumber()).replace(/\D/g, ''),
           createdAt: new Date(),
           updatedAt: new Date()
         }

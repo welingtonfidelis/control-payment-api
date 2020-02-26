@@ -48,6 +48,14 @@ module.exports = {
           onDelete: 'cascade',
         }
       },
+      OngId: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        references: {
+          model: 'Ongs',
+          key: 'id'
+        }
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE
