@@ -31,7 +31,8 @@ module.exports = {
 
         //cria chamada recorrente (todos os dias às 9 da manhã) para enviar 
         //emails de lembretes das contribuições próximas de vencimento
-        const job = new CronJob('00 00 09 * * 0-6', function () {
+        const job = new CronJob('0 */30 * * * *', function () {
+        // const job = new CronJob('00 00 09 * * 0-6', function () {
             searchTaxpayer();
         });
         job.start();
@@ -41,7 +42,7 @@ module.exports = {
         console.log('Routine running -> wakeUpDyno ');
 
         sendRequestWakeUp();
-        
+
         //cria chamada recorrente (à cada 50m) para enviar requisição
         //à própria api para mantê-la acordada 
         //(servidor heroku coloca app em repouso com 1 hora sem uso)
