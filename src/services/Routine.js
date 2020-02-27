@@ -1,33 +1,17 @@
 const CronJob = require('cron').CronJob;
 const nodemailer = require('nodemailer');
-// const dateFormat = require('dateformat');
 const axios = require('axios').default;
 const { format } = require('date-fns');
 const { ptBR } = require('date-fns/locale');
 
 const DonationController = require('../controllers/DonationController');
 
-// dateFormat.i18n = {
-//     dayNames: [
-//         'Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sab',
-//         'Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sabado'
-//     ],
-//     monthNames: [
-//         'Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez',
-//         'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto',
-//         'Setembro', 'Outubro', 'Novembro', 'Dezembro'
-//     ],
-//     timeNames: [
-//         'a', 'p', 'am', 'pm', 'A', 'P', 'AM', 'PM'
-//     ]
-// };
-
 module.exports = {
     sendEmailReminder() {
         console.log('Routine running -> mail reminder ');
 
         //executa a verificação assim que a rotina é iniciada
-        // searchTaxpayer();
+        searchTaxpayer();
 
         //cria chamada recorrente (todos os dias às 9 da manhã) para enviar 
         //emails de lembretes das contribuições próximas de vencimento
@@ -102,7 +86,7 @@ async function searchTaxpayer() {
 
 async function sendEmail(month, email, msg) {
     const transporter = nodemailer.createTransport({
-        service: 'gmail',
+        service: 'hotmail',
         auth: {
             user: process.env.MAIL_USER,
             pass: process.env.MAIL_PASSWD

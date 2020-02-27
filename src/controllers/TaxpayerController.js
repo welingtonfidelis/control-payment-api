@@ -178,16 +178,18 @@ module.exports = {
 
     async getByExpiratioEqualDate(UserId, arrayTaxpayerId, obj) {
         const action = 'GET TAXPAYER BY EXPIRATION EQUAL DATE', today = new Date();
-        const { first, second } = obj;
-        let query = [];
+        let { first, second } = obj, query = [];
+
+        first = (new Date(today.setDate(today.getDate() + first))).getDate(),
+        second = (new Date(today.setDate(today.getDate() + second))).getDate();
 
         try {
             query = await Taxpayer.findAll({
                 where: {
                     ['$Taxpayer.id$']: { [Op.notIn]: arrayTaxpayerId },
                     [Op.or]: [
-                        {'$Payment.expiration$': { [Op.eq]: today.getDate() + first }},
-                        {'$Payment.expiration$': { [Op.eq]: today.getDate() + second }}                      
+                        {'$Payment.expiration$': { [Op.eq]: first }},
+                        {'$Payment.expiration$': { [Op.eq]: second }}                      
                     ],
                 },
                 attributes: [
