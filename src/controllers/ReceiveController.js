@@ -63,8 +63,8 @@ module.exports = {
                     {
                         model: Ong,
                         attributes: [
-                            "id", "name", "cnpj", "email", 
-                            "statelaw", "municipallaw"
+                            "id", "name", "cnpj", "email", "statelaw", 
+                            "municipallaw", "social1", "social2"
                         ],
                         as: 'Ong'
                     }
@@ -133,8 +133,8 @@ module.exports = {
                     {
                         model: Ong,
                         attributes: [
-                            "id", "name", "cnpj", "email", 
-                            "statelaw", "municipallaw"
+                            "id", "name", "cnpj", "email", "statelaw", 
+                            "municipallaw", "social1", "social2"
                         ],
                         as: 'Ong'
                     }
@@ -208,8 +208,8 @@ module.exports = {
                     {
                         model: Ong,
                         attributes: [
-                            "id", "name", "cnpj", "email", 
-                            "statelaw", "municipallaw"
+                            "id", "name", "cnpj", "email", "statelaw", 
+                            "municipallaw", "social1", "social2"
                         ],
                         as: 'Ong'
                     }

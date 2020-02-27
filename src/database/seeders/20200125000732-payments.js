@@ -8,7 +8,7 @@ module.exports = {
 
     //gera clientes aleatórios
     let payments = [];
-    for (let i = 0; i < 10; i++) {
+    for (let i = 0; i < 15; i++) {
       const now = new Date();
 
       payments.push(

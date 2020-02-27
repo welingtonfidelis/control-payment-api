@@ -2,11 +2,25 @@
 
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.bulkInsert({tableName: 'Ongs'}, 
-    [{
+    return queryInterface.bulkInsert({ tableName: 'Ongs' },
+      [{
+        name: 'Ong de testes',
+        email: 'testes@email.com',
+        social1: null,
+        social2: null,
+        logo: 'logo.png',
+        cnpj: '000.000.000/0001-00',
+        statelaw: '00.000/001',
+        municipallaw: '0.000/02',
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      {
         name: 'Patas Amigas',
         email: 'contatopatasamigas@hotmail.com',
-        logo: 'https://docs.google.com/uc?export=download&id=1OkCtfLME_XS7pnNYzhYCvwcIxIVEYSau',
+        social1: null,
+        social2: null,
+        logo: 'logo-patasamigas.png',
         cnpj: '023.778.707/0001-29',
         statelaw: '22.321/16',
         municipallaw: '1.965/95',
@@ -15,21 +29,23 @@ module.exports = {
       },
       {
         name: 'SOS Patas',
-        email: 'sos@email.com',
-        logo: 'https://docs.google.com/uc?export=download&id=1Jbr_aLjitHAMvqYiuyZ1AV-iFQX0URJ_',
+        email: 'tarlei.passos@hotmail.com',
+        social1: 'https://www.facebook.com/sospatasmg/',
+        social2: null,
+        logo: 'logo-sospatas.jpg',
         cnpj: '026.515.895/0001-90',
         statelaw: null,
         municipallaw: '3.486',
         createdAt: new Date(),
         updatedAt: new Date()
       }
-    ])
+      ])
   },
 
   down: (queryInterface, Sequelize) => {
-    return queryInterface.bulkDelete({tableName: 'Ongs'}, 
-    [{
-      AddressId: 1
-    }])
+    return queryInterface.bulkDelete({ tableName: 'Ongs' },
+      [{
+        AddressId: 1
+      }])
   }
 };

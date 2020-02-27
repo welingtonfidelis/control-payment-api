@@ -25,6 +25,14 @@ module.exports = {
         allowNull: false,
         type: Sequelize.STRING
       },
+      social1: {
+        allowNull: true,
+        type: Sequelize.STRING
+      },
+      social2: {
+        allowNull: true,
+        type: Sequelize.STRING
+      },
       statelaw: {
         allowNull: true,
         type: Sequelize.STRING

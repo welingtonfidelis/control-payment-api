@@ -16,6 +16,9 @@ const { LogInfo } = require('../models');
 
 module.exports = {
     async login(req, res) {
+        console.log(bcrypt.hashSync('admteste', saltRounds));
+        console.log(bcrypt.hashSync('userteste', saltRounds));
+        
         let { user, password } = req.body, action = 'LOGIN';
 
         try {
