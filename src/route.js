@@ -12,6 +12,11 @@ const ReceiveController = require('./controllers/ReceiveController');
 //login
 routes.post('/user/login', UserController.login);
 
+//rota usada para manter o servidor heroku ativo (sem dormir por falta de uso em 1 hora)
+routes.get('/hello', (req, res) => {
+    res.send('Hello');
+})
+
 //Validação de token para acesso às rotas
 routes.use(verifyJWT);
 

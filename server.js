@@ -15,8 +15,12 @@ app.use(cors());
 app.use('/api', require('./src/route'));
 
 app.listen(process.env.PORT || port, function () {
-    console.log(`Server running in ${port}\n\n`);
-});
+    console.log(`Server running in ${port}\n`);
 
-//inicia rotina: email de lembrete de contribuição próxima
-routine.sendEmailReminder();
+    //ROTINAS
+    //email de lembrete de contribuição próxima
+    routine.sendEmailReminder();
+
+    //manter servidor heroku ativo 
+    routine.wakeUpDyno();
+});
