@@ -208,8 +208,8 @@ module.exports = {
                     {
                         model: Ong,
                         attributes: [
-                            "id", "name", "cnpj", "email",
-                            "statelaw", "municipallaw", "logo"
+                            "id", "name", "cnpj", "email", "social1", 
+                            "social2", "statelaw", "municipallaw", "logo"
                         ],
                         as: 'Ong'
                     }

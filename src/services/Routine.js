@@ -27,10 +27,10 @@ module.exports = {
 
         sendRequestWakeUp();
 
-        //cria chamada recorrente (à cada 50m) para enviar requisição
+        //cria chamada recorrente (à cada 29m) para enviar requisição
         //à própria api para mantê-la acordada 
-        //(servidor heroku coloca app em repouso com 1 hora sem uso)
-        const job = new CronJob('0 */50 * * * *', function () {
+        //(servidor heroku coloca app em repouso 30m sem uso)
+        const job = new CronJob('0 */29 * * * *', function () {
             sendRequestWakeUp();
         });
         job.start();
@@ -51,7 +51,7 @@ function sendRequestWakeUp() {
 
 async function searchTaxpayer() {
     const dthr = format(new Date(), 'dd/mm/yyyy HH:MM:ss', { locale: ptBR });
-    const month = format(new Date(), 'mmmm', { locale: ptBR });
+    const month = format(new Date(), 'MMMM', { locale: ptBR });
 
     console.log(`\n${dthr} start routine sendMail`);
 
@@ -61,6 +61,8 @@ async function searchTaxpayer() {
     taxpayer.forEach(el => {
         const { Payment } = el;
         const { Ong } = el;
+        const social1 = Ong.social1 ? Ong.social1 : '';
+        const social2 = Ong.social2 ? Ong.social2 : '';
 
         const msg = `
             <h4>Olá ${el.name}.</h4>
@@ -76,8 +78,10 @@ async function searchTaxpayer() {
 
                 <br><br>
                 Atenciosamente, <strong>${Ong.name}</strong>.
+                <p>${Ong.email}</p>
+                <p>${social1}</p>
+                <p>${social2}</p>
                 <br>
-                <img style="width: 80px" src="${Ong.logo}" alt="OngLogo"/>
             </div> `;
 
         sendEmail(month, el.email, msg);
