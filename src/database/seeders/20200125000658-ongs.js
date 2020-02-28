@@ -29,8 +29,8 @@ module.exports = {
       },
       {
         name: 'SOS Patas',
-        email: 'tarlei.passos@hotmail.com',
-        social1: 'https://www.facebook.com/sospatasmg/',
+        email: 'sospatas@hotmail.com',
+        social1: 'www.facebook.com/ S.O.S Patas - Sociedade de proteção aos animais de Passos',
         social2: null,
         logo: 'logo-sospatas.jpg',
         cnpj: '026.515.895/0001-90',

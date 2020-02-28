@@ -11,12 +11,11 @@ module.exports = {
         console.log('Routine running -> mail reminder ');
 
         //executa a verificação assim que a rotina é iniciada
-        searchTaxpayer();
+        // searchTaxpayer();
 
         //cria chamada recorrente (todos os dias às 9 da manhã) para enviar 
         //emails de lembretes das contribuições próximas de vencimento
-        const job = new CronJob('0 */30 * * * *', function () {
-        // const job = new CronJob('00 00 09 * * 0-6', function () {
+        const job = new CronJob('00 00 09 * * 0-6', function () {
             searchTaxpayer();
         });
         job.start();
@@ -45,7 +44,8 @@ function sendRequestWakeUp() {
         axios.get('https://ctrl-receive-ong-api.herokuapp.com/api/hello');
 
     } catch (error) {
-        console.log(error);
+        const err = error.stack || error.errors || error.message || error;
+        console.log(err);
     }
 }
 
@@ -109,6 +109,7 @@ async function sendEmail(month, email, msg) {
         console.log("Message sent: %s", resp.messageId);
 
     } catch (error) {
-        console.log(error);
+        const err = error.stack || error.errors || error.message || error;
+        console.log(err);
     }
 }
