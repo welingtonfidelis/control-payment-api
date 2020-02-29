@@ -8,6 +8,7 @@ const TaxpayerController = require('./controllers/TaxpayerController');
 const AddressController = require('./controllers/AddressController');
 const DonationController = require('./controllers/DonationController');
 const ReceiveController = require('./controllers/ReceiveController');
+const CashRegisterController = require('./controllers/CashRegisterController');
 
 //login
 routes.post('/user/login', UserController.login);
@@ -108,6 +109,25 @@ routes.get('/receive/bytaxpayer', (req, res) => {
     ReceiveController.getByTaxpayer(req, res);
 });
 
+//Entrada/Saída de caixa
+routes.post('/cashregister', (req, res) => {
+    CashRegisterController.create(req, res);
+});
+routes.get('/cashregister', (req, res) => {
+    CashRegisterController.getAll(req, res);
+});
+routes.get('/cashregister/byfilter', (req, res) => {
+    CashRegisterController.getAllByFilter(req, res);
+});
+routes.get('/cashregister/:id', (req, res) => {
+    CashRegisterController.get(req, res);
+});
+routes.put('/cashregister/:id', (req, res) => {
+    CashRegisterController.update(req, res);
+});
+routes.delete('/cashregister/:id', (req, res) => {
+    CashRegisterController.delete(req, res);
+});
 
 
 //Validação de Token para continuar a executar requizição
