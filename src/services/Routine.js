@@ -15,7 +15,7 @@ module.exports = {
 
         //cria chamada recorrente (todos os dias às 9 da manhã) para enviar 
         //emails de lembretes das contribuições próximas de vencimento
-        const job = new CronJob('00 00 09 * * 0-6', function () {
+        const job = new CronJob('00 00 12 * * 0-6', function () {
             searchTaxpayer();
         });
         job.start();
