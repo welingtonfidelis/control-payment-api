@@ -11,6 +11,7 @@
   "author": "Welington Fidelis de Sousa",
   "license": "ISC",
   "dependencies": {
+    "@sendgrid/mail": "^6.5.3",
     "axios": "^0.19.2",
     "bcrypt": "^3.0.7",
     "cors": "^2.8.5",
@@ -20,7 +21,6 @@
     "express": "^4.17.1",
     "faker": "^4.1.0",
     "jsonwebtoken": "^8.5.1",
-    "nodemailer": "^6.4.2",
     "pg": "^7.17.1",
     "sequelize": "^5.21.3",
     "sequelize-cli": "^5.5.1",

@@ -240,7 +240,7 @@ module.exports = {
                     model: Taxpayer,
                     attributes: ["id", "name"],
                     as: 'Taxpayer'
-                }],
+                }]
             });
 
             query = validateDonations(query);

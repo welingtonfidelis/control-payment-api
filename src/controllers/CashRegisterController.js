@@ -1,18 +1,13 @@
 const Util = require('../services/Util');
 const { Op } = require('sequelize');
 const yup = require('yup');
-const bcrypt = require('bcrypt');
-const saltRounds = 10;
 
 require('dotenv-safe').config()
 const jwt = require('jsonwebtoken');
 
 const DonationController = require('./DonationController');
-const OngController = require('./OngController');
 
 const { User } = require('../models');
-const { Address } = require('../models');
-const { LogInfo } = require('../models');
 const { CashRegister } = require('../models');
 
 module.exports = {
@@ -70,7 +65,7 @@ module.exports = {
             { start, end, type, donation } = req.query,
             action = 'SELECT ALL BY FILTER CASHREGISTERS';
         const [tIn = '', tOut = ''] = ((type.replace(' ', '')).split(','));
-       
+
         try {
             let query = await CashRegister.findAll({
                 where: {
@@ -82,7 +77,7 @@ module.exports = {
                     "id", "description", "type", "value",
                     "paidIn", "createdAt", "observation"
                 ],
-                order: [['paidIn', 'DESC']],
+                order: [['paidIn', 'ASC']],
                 include: [
                     {
                         model: User,
@@ -92,12 +87,16 @@ module.exports = {
                     }],
             });
 
-            if (donation){
+            //inclui doações no retorno do caixa
+            if (donation) {
                 const donations = await DonationController.getByDate(req, res, true);
-                
-                for(const donation of donations){
+
+                for (const donation of donations) {
                     const { Taxpayer } = donation;
-                    query.push({
+
+
+                    let ctrl = true;
+                    const tmp = {
                         id: donation.id,
                         description: `Doação - ${Taxpayer.name}`,
                         type: 'in',
@@ -109,9 +108,21 @@ module.exports = {
                             id: 0,
                             name: "ND"
                         }
-                    })
+                    }
+
+                    for (let i = 0; i < query.length; i++) {
+                        //se existir uma data de pagamento (entrada de caixa) maior 
+                        //que a doação corrente, esta ultima é inserida no array
+                        if (ctrl && (new Date(query[i].paidIn) > new Date(tmp.paidIn))) {
+                            query.splice(i, 0, tmp);
+                            ctrl = false;
+                            break;
+                        }
+                    }
+                    //se a data da doação for maior que as correntes, é incluida na ultima posição
+                    if (ctrl) query.push(tmp);
                 }
-            } 
+            }
 
 
             res.status(200).send({ status: true, response: query, code: 20 });
@@ -174,7 +185,7 @@ module.exports = {
             }
         }
         else {
-            res.status(400).send({ status: false, response: 'invalid user info', code: 21 })
+            res.status(400).send({ status: false, response: 'invalid cashregister info', code: 21 })
         }
     },
 

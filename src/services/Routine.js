@@ -1,5 +1,5 @@
 const CronJob = require('cron').CronJob;
-const nodemailer = require('nodemailer');
+const sgMail = require('@sendgrid/mail');
 const axios = require('axios').default;
 const { format } = require('date-fns');
 const { ptBR } = require('date-fns/locale');
@@ -11,7 +11,7 @@ module.exports = {
         console.log('Routine running -> mail reminder ');
 
         //executa a verificação assim que a rotina é iniciada
-        // searchTaxpayer();
+        searchTaxpayer();
 
         //cria chamada recorrente (todos os dias às 9 da manhã) para enviar 
         //emails de lembretes das contribuições próximas de vencimento
@@ -58,21 +58,6 @@ async function searchTaxpayer() {
     const resp = await DonationController.returnDonationReceive(1, null, null, { first: 2, second: 7 });
     const { taxpayer } = resp;
 
-    //teste de rotina no heroku
-    taxpayer.push({
-        name: 'welington Teste',
-        email: 'welingtonfidelis@gmail.com',
-        Payment: {
-            value: 50,
-            expiration: 5
-        },
-        Ong: {
-            name: 'teste welington',
-            email: 'teste@email.com',
-            social1: 'testesocial@'
-        }
-    })
-
     taxpayer.forEach(el => {
         const { Payment } = el;
         const { Ong } = el;
@@ -99,29 +84,19 @@ async function searchTaxpayer() {
                 <br>
             </div> `;
 
-        sendEmail(month, el.email, msg);
+        sendEmail(month, el.email, Ong.email, msg);
     });
 }
 
-async function sendEmail(month, email, msg) {
-    const transporter = nodemailer.createTransport({
-        service: 'hotmail',
-        auth: {
-            user: process.env.MAIL_USER,
-            pass: process.env.MAIL_PASSWD
-        }
-    });
-
+async function sendEmail(month, receiver, sender, msg) {
     try {
-        const resp = await transporter.sendMail({
-            from: process.env.MAIL_USER,
-            to: email,
+        sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+        await sgMail.send({
+            to: receiver,
+            from: sender,
             subject: `Contribuição do mês de ${month}.`,
-            // text: 'That was easy!',
             html: msg,
         });
-
-        console.log("Message sent: %s", resp.messageId);
 
     } catch (error) {
         const err = error.stack || error.errors || error.message || error;
