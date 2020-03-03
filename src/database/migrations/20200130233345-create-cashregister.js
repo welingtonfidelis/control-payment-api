@@ -13,7 +13,7 @@ module.exports = {
         allowNull: false,
         type: Sequelize.REAL
       },
-      registerIn: {
+      paidIn: {
         allowNull: false,
         type: Sequelize.DATE
       },

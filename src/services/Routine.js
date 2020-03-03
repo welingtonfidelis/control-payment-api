@@ -58,6 +58,21 @@ async function searchTaxpayer() {
     const resp = await DonationController.returnDonationReceive(1, null, null, { first: 2, second: 7 });
     const { taxpayer } = resp;
 
+    //teste de rotina no heroku
+    taxpayer.push({
+        name: 'welington Teste',
+        email: 'welingtonfidelis@gmail.com',
+        Payment: {
+            value: 50,
+            expiration: 5
+        },
+        Ong: {
+            name: 'teste welington',
+            email: 'teste@email.com',
+            social1: 'testesocial@'
+        }
+    })
+
     taxpayer.forEach(el => {
         const { Payment } = el;
         const { Ong } = el;

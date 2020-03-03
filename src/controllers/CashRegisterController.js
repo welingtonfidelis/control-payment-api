@@ -7,7 +7,7 @@ const saltRounds = 10;
 require('dotenv-safe').config()
 const jwt = require('jsonwebtoken');
 
-const AddressController = require('./AddressController');
+const DonationController = require('./DonationController');
 const OngController = require('./OngController');
 
 const { User } = require('../models');
@@ -45,10 +45,10 @@ module.exports = {
             const query = await CashRegister.findAll({
                 where: { OngId },
                 attributes: [
-                    "id", "description", "type", "value", 
-                    "registerIn", "createdAt", "observation"
+                    "id", "description", "type", "value",
+                    "paidIn", "createdAt", "observation"
                 ],
-                order: [['registerIn', 'DESC']],
+                order: [['paidIn', 'DESC']],
                 include: [{
                     model: User,
                     attributes: [
@@ -66,30 +66,53 @@ module.exports = {
     },
 
     async getAllByFilter(req, res) {
-        let { UserId, OngId } = req.body, 
-            { dateStart, dateEnd, type } = req.query
+        let { UserId, OngId } = req.body,
+            { start, end, type, donation } = req.query,
             action = 'SELECT ALL BY FILTER CASHREGISTERS';
         const [tIn = '', tOut = ''] = ((type.replace(' ', '')).split(','));
-
+       
         try {
-            const query = await CashRegister.findAll({
+            let query = await CashRegister.findAll({
                 where: {
-                    OngId, 
-                    registerIn: {[Op.between]: [dateStart, dateEnd]},
-                    type: {[Op.or]: [tIn, tOut]}
+                    OngId,
+                    paidIn: { [Op.between]: [start, end] },
+                    type: { [Op.or]: [tIn, tOut] }
                 },
                 attributes: [
-                    "id", "description", "type", "value", 
-                    "registerIn", "createdAt", "observation"
+                    "id", "description", "type", "value",
+                    "paidIn", "createdAt", "observation"
                 ],
-                order: [['registerIn', 'DESC']],
-                include: [{
-                    model: User,
-                    attributes: [
-                        "id", "name"
-                    ]
-                }],
+                order: [['paidIn', 'DESC']],
+                include: [
+                    {
+                        model: User,
+                        attributes: [
+                            "id", "name"
+                        ]
+                    }],
             });
+
+            if (donation){
+                const donations = await DonationController.getByDate(req, res, true);
+                
+                for(const donation of donations){
+                    const { Taxpayer } = donation;
+                    query.push({
+                        id: donation.id,
+                        description: `Doação - ${Taxpayer.name}`,
+                        type: 'in',
+                        value: donation.value,
+                        paidIn: donation.paidIn,
+                        createdAt: donation.createdAt,
+                        observation: '',
+                        User: {
+                            id: 0,
+                            name: "ND"
+                        }
+                    })
+                }
+            } 
+
 
             res.status(200).send({ status: true, response: query, code: 20 });
         } catch (error) {
@@ -107,8 +130,8 @@ module.exports = {
             const query = await CashRegister.findOne({
                 where: { id },
                 attributes: [
-                    "id", "description", "type", "value", 
-                    "registerIn", "createdAt", "observation"
+                    "id", "description", "type", "value",
+                    "paidIn", "createdAt", "observation"
                 ],
                 include: [{
                     model: User,
@@ -179,5 +202,5 @@ let schema = yup.object().shape({
     value: yup.number().required(),
     type: yup.string().required(),
     description: yup.string().required(),
-    registerIn: yup.date().required(),
+    paidIn: yup.date().required(),
 });
