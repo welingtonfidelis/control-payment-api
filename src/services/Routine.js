@@ -11,7 +11,7 @@ module.exports = {
         console.log('Routine running -> mail reminder ');
 
         //executa a verificação assim que a rotina é iniciada
-        searchTaxpayer();
+        // searchTaxpayer();
 
         //cria chamada recorrente (todos os dias às 9 da manhã) para enviar 
         //emails de lembretes das contribuições próximas de vencimento
@@ -91,7 +91,7 @@ async function searchTaxpayer() {
 async function sendEmail(month, receiver, sender, msg) {
     try {
         sgMail.setApiKey(process.env.SENDGRID_API_KEY);
-        await sgMail.send({
+        sgMail.send({
             to: receiver,
             from: sender,
             subject: `Contribuição do mês de ${month}.`,

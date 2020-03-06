@@ -29,7 +29,7 @@ module.exports = {
             }
         }
         else {
-            res.status(400).send({ status: false, response: 'invalid user info', code: 21 })
+            res.status(400).send({ status: false, response: 'invalid cashregister info', code: 21 })
         }
     },
 
