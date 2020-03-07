@@ -15,7 +15,7 @@ module.exports = {
           observation: faker.lorem.sentence(10),
           type: faker.random.arrayElement(['in', 'out']),
           description: faker.lorem.sentence(5),
-          registerIn: faker.date.between('2019-06-01', '2020-06-28'),
+          paidIn: faker.date.between('2019-06-01', '2020-06-28'),
           UserId: Math.floor((Math.random() * 2) + 1),
           OngId: 1,
           createdAt: new Date(),

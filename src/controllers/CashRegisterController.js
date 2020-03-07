@@ -1,18 +1,13 @@
 const Util = require('../services/Util');
 const { Op } = require('sequelize');
 const yup = require('yup');
-const bcrypt = require('bcrypt');
-const saltRounds = 10;
 
 require('dotenv-safe').config()
 const jwt = require('jsonwebtoken');
 
-const AddressController = require('./AddressController');
-const OngController = require('./OngController');
+const DonationController = require('./DonationController');
 
 const { User } = require('../models');
-const { Address } = require('../models');
-const { LogInfo } = require('../models');
 const { CashRegister } = require('../models');
 
 module.exports = {
@@ -34,7 +29,7 @@ module.exports = {
             }
         }
         else {
-            res.status(400).send({ status: false, response: 'invalid user info', code: 21 })
+            res.status(400).send({ status: false, response: 'invalid cashregister info', code: 21 })
         }
     },
 
@@ -45,10 +40,10 @@ module.exports = {
             const query = await CashRegister.findAll({
                 where: { OngId },
                 attributes: [
-                    "id", "description", "type", "value", 
-                    "registerIn", "createdAt", "observation"
+                    "id", "description", "type", "value",
+                    "paidIn", "createdAt", "observation"
                 ],
-                order: [['registerIn', 'DESC']],
+                order: [['paidIn', 'DESC']],
                 include: [{
                     model: User,
                     attributes: [
@@ -66,30 +61,69 @@ module.exports = {
     },
 
     async getAllByFilter(req, res) {
-        let { UserId, OngId } = req.body, 
-            { dateStart, dateEnd, type } = req.query
+        let { UserId, OngId } = req.body,
+            { start, end, type, donation } = req.query,
             action = 'SELECT ALL BY FILTER CASHREGISTERS';
         const [tIn = '', tOut = ''] = ((type.replace(' ', '')).split(','));
 
         try {
-            const query = await CashRegister.findAll({
+            let query = await CashRegister.findAll({
                 where: {
-                    OngId, 
-                    registerIn: {[Op.between]: [dateStart, dateEnd]},
-                    type: {[Op.or]: [tIn, tOut]}
+                    OngId,
+                    paidIn: { [Op.between]: [start, end] },
+                    type: { [Op.or]: [tIn, tOut] }
                 },
                 attributes: [
-                    "id", "description", "type", "value", 
-                    "registerIn", "createdAt", "observation"
+                    "id", "description", "type", "value",
+                    "paidIn", "createdAt", "observation"
                 ],
-                order: [['registerIn', 'DESC']],
-                include: [{
-                    model: User,
-                    attributes: [
-                        "id", "name"
-                    ]
-                }],
+                order: [['paidIn', 'ASC']],
+                include: [
+                    {
+                        model: User,
+                        attributes: [
+                            "id", "name"
+                        ]
+                    }],
             });
+
+            //inclui doações no retorno do caixa
+            if (donation) {
+                const donations = await DonationController.getByDate(req, res, true);
+
+                for (const donation of donations) {
+                    const { Taxpayer } = donation;
+
+
+                    let ctrl = true;
+                    const tmp = {
+                        id: donation.id,
+                        description: `Doação - ${Taxpayer.name}`,
+                        type: 'in',
+                        value: donation.value,
+                        paidIn: donation.paidIn,
+                        createdAt: donation.createdAt,
+                        observation: '',
+                        User: {
+                            id: 0,
+                            name: "ND"
+                        }
+                    }
+
+                    for (let i = 0; i < query.length; i++) {
+                        //se existir uma data de pagamento (entrada de caixa) maior 
+                        //que a doação corrente, esta ultima é inserida no array
+                        if (ctrl && (new Date(query[i].paidIn) > new Date(tmp.paidIn))) {
+                            query.splice(i, 0, tmp);
+                            ctrl = false;
+                            break;
+                        }
+                    }
+                    //se a data da doação for maior que as correntes, é incluida na ultima posição
+                    if (ctrl) query.push(tmp);
+                }
+            }
+
 
             res.status(200).send({ status: true, response: query, code: 20 });
         } catch (error) {
@@ -107,8 +141,8 @@ module.exports = {
             const query = await CashRegister.findOne({
                 where: { id },
                 attributes: [
-                    "id", "description", "type", "value", 
-                    "registerIn", "createdAt", "observation"
+                    "id", "description", "type", "value",
+                    "paidIn", "createdAt", "observation"
                 ],
                 include: [{
                     model: User,
@@ -151,7 +185,7 @@ module.exports = {
             }
         }
         else {
-            res.status(400).send({ status: false, response: 'invalid user info', code: 21 })
+            res.status(400).send({ status: false, response: 'invalid cashregister info', code: 21 })
         }
     },
 
@@ -179,5 +213,5 @@ let schema = yup.object().shape({
     value: yup.number().required(),
     type: yup.string().required(),
     description: yup.string().required(),
-    registerIn: yup.date().required(),
+    paidIn: yup.date().required(),
 });

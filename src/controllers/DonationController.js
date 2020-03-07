@@ -38,7 +38,7 @@ module.exports = {
 
         try {
             let query = await Donation.findAll({
-                where: {'$Taxpayer.OngId$': OngId},
+                where: { '$Taxpayer.OngId$': OngId },
                 attributes: [
                     "id", "value", "paidIn", "observation", "createdAt"
                 ],
@@ -77,7 +77,7 @@ module.exports = {
         res.status(200).send({ status: true, response: resp, code: 20 });
     },
 
-    async getByDate(req, res) {
+    async getByDate(req, res, cashRegister = null) {
         const { UserId, OngId } = req.body, { start, end } = req.query,
             action = 'SELECT DONATION BYDATE';
 
@@ -87,16 +87,20 @@ module.exports = {
                     paidIn: { [Op.between]: [start, end] },
                     '$Taxpayer.OngId$': OngId
                 },
-                attributes: ['TaxpayerId', 'value', 'paidIn'],
+                attributes: ['id', 'TaxpayerId', 'value', 'paidIn', 'createdAt'],
                 order: [['paidIn', 'ASC']],
-                include: [{
-                    model: Taxpayer,
-                    attributes: ["id", "name"],
-                    as: 'Taxpayer'
-                }],
+                include: [
+                    {
+                        model: Taxpayer,
+                        attributes: ["id", "name"],
+                        as: 'Taxpayer'
+                    }]
             })
 
-            res.status(200).send({ status: true, response: query, code: 20 });
+            //chamada para relatório vindo do CashRegisterController
+            if (cashRegister) return query;
+            //chamada para relatório apenas de dações
+            else res.status(200).send({ status: true, response: query, code: 20 });
 
         } catch (error) {
             const err = error.stack || error.errors || error.message || error;
@@ -236,7 +240,7 @@ module.exports = {
                     model: Taxpayer,
                     attributes: ["id", "name"],
                     as: 'Taxpayer'
-                }],
+                }]
             });
 
             query = validateDonations(query);
