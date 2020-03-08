@@ -62,16 +62,18 @@ module.exports = {
 
     async getAllByFilter(req, res) {
         let { UserId, OngId } = req.body,
-            { start, end, type, donation } = req.query,
+            { start, end, typeIn, typeOut, typeDonation } = req.query,
             action = 'SELECT ALL BY FILTER CASHREGISTERS';
-        const [tIn = '', tOut = ''] = ((type.replace(' ', '')).split(','));
+
+        typeIn = typeIn === 'true' ? 'in' : '';
+        typeOut = typeOut === 'true' ? 'out' : '';
 
         try {
             let query = await CashRegister.findAll({
                 where: {
                     OngId,
                     paidIn: { [Op.between]: [start, end] },
-                    type: { [Op.or]: [tIn, tOut] }
+                    type: { [Op.or]: [typeIn, typeOut] }
                 },
                 attributes: [
                     "id", "description", "type", "value",
@@ -88,7 +90,7 @@ module.exports = {
             });
 
             //inclui doações no retorno do caixa
-            if (donation) {
+            if (typeDonation === 'true') {
                 const donations = await DonationController.getByDate(req, res, true);
 
                 for (const donation of donations) {
@@ -99,7 +101,7 @@ module.exports = {
                     const tmp = {
                         id: donation.id,
                         description: `Doação - ${Taxpayer.name}`,
-                        type: 'in',
+                        type: 'don',
                         value: donation.value,
                         paidIn: donation.paidIn,
                         createdAt: donation.createdAt,
