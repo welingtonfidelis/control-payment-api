@@ -1,5 +1,6 @@
 const Util = require('../services/Util');
 const { Op } = require('sequelize');
+const nodemailer = require('nodemailer');
 const yup = require('yup');
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
@@ -16,9 +17,6 @@ const { LogInfo } = require('../models');
 
 module.exports = {
     async login(req, res) {
-        console.log(bcrypt.hashSync('admteste', saltRounds));
-        console.log(bcrypt.hashSync('userteste', saltRounds));
-        
         let { user, password } = req.body, action = 'LOGIN';
 
         try {
@@ -33,10 +31,10 @@ module.exports = {
                 const { id, name, isAdm, OngId } = query, hash = query.password;
 
                 const isValid = await bcrypt.compareSync(password, hash);
-                
+
                 if (isValid) {
                     //Recupera informações sobre a ong que o usuário pertence
-                    const Ong = await OngController.getLogo(req, OngId);                
+                    const Ong = await OngController.getLogo(req, OngId);
                     const nameOng = Ong.name ? Ong.name : 'Ong Não identificada';
                     const logoOng = Ong.logo ? Ong.logo : 'logo';
 
@@ -84,6 +82,88 @@ module.exports = {
         }
     },
 
+    async resetMail(req, res) {
+        const { email } = req.body, action = 'RESET PASSWORD BY EMAIL';
+
+        try {
+            const query = await User.findOne({
+                where: { email },
+                attributes: ['id', 'name']
+            });
+
+            if (query) {
+                const { id, name } = query;
+                const token = jwt.sign({ id }, process.env.SECRET, {
+                    expiresIn: 300
+                });
+
+                await User.update(
+                    { tokenResetPswd: token },
+                    {
+                        return: true,
+                        where: {
+                            id
+                        }
+                    });
+
+                const transporter = nodemailer.createTransport({
+                    service: 'hotmail',
+                    auth: {
+                        user: process.env.MAIL_USER,
+                        pass: process.env.MAIL_PASSWD
+                    }
+                });
+
+                await transporter.sendMail({
+                    from: process.env.MAIL_USER,
+                    to: email, // list of receivers
+                    subject: "Recuperar senha", // Subject line
+                    //text: "Hello world?", // plain text body
+                    html: `
+                        <b>Olá ${name}.</b>
+                        <p>Houve um pedido de recuperação de senha no seu e-mail, 
+                        caso não tenha sido você, pedimos que ignore esta mensagem. Agora,
+                        se gostaria de recuperar sua senha, 
+                        <a href="http://localhost:3001/${token}">clique aqui</a></p>
+                        `
+                });
+            }
+
+
+            res.status(200).send({ status: true, response: query, code: 20 });
+        } catch (error) {
+            const err = error.stack || error.errors || error.message || error;
+            Util.saveLogError(action, err, 1)
+            res.status(500).send({ status: false, response: err, code: 22 })
+        }
+
+    },
+
+    async resetPswd(req, res) {
+        let { password, UserId } = req.body, { token } = req.headers,
+            action = 'RESET PASSWORD USER';
+        password = bcrypt.hashSync(password, saltRounds);
+
+        try {
+            const query = await User.update(
+                { password },
+                {
+                    return: true,
+                    where: {
+                        tokenResetPswd: token
+                    }
+                });
+
+            Util.saveLogInfo(action, UserId)
+            res.status(200).send({ status: true, response: query, code: 20 });
+
+        } catch (error) {
+            const err = error.stack || error.errors || error.message || error;
+            Util.saveLogError(action, err, UserId)
+            res.status(500).send({ status: false, response: err, code: 22 })
+        }
+    },
+
     async create(req, res) {
         const { user, UserId, OngId } = req.body, action = 'CREATE USER';
 
@@ -93,7 +173,7 @@ module.exports = {
                 const { id } = await AddressController.create(req, res);
                 //insere id do novo endereço
                 user.AddressId = id;
-                
+
                 //inclui id da ong, com base no usuário logado (token)
                 user.OngId = OngId;
 
@@ -120,7 +200,7 @@ module.exports = {
 
         try {
             const query = await User.findAll({
-                where: {OngId},
+                where: { OngId },
                 attributes: [
                     "id", "name", "email", "phone", "user", "isAdm", "createdAt"
                 ],
