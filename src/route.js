@@ -13,6 +13,9 @@ const CashRegisterController = require('./controllers/CashRegisterController');
 //login
 routes.post('/user/login', UserController.login);
 
+//reset de senha
+routes.post('/user/resetmail', UserController.resetMail);
+
 //rota usada para manter o servidor heroku ativo (sem dormir por falta de uso em 1 hora)
 routes.get('/hello', (req, res) => {
     res.send('Hello');
@@ -22,6 +25,9 @@ routes.get('/hello', (req, res) => {
 routes.use(verifyJWT);
 
 //Usuário
+routes.post('/user/resetpassword', (req, res) => {
+    UserController.resetPswd(req, res);
+});
 routes.post('/user', (req, res) => {
     UserController.create(req, res);
 });
@@ -164,5 +170,8 @@ function verifyJWT(req, res, next) {
 //20 sucesso na requisição (create, update, select, delete)
 //21 informações inválidas (fora do padrão esperado. Ex: criar usuário sem email)
 //22 problema interno da aplicação
+
+//30 sucesso na requisição de email para reset de senha
+//31 email inválido na requisição de reset de senha por email
 
 module.exports = routes
