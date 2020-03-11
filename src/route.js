@@ -25,7 +25,7 @@ routes.get('/hello', (req, res) => {
 routes.use(verifyJWT);
 
 //Usuário
-routes.post('/user/resetpswd', (req, res) => {
+routes.post('/user/resetpassword', (req, res) => {
     UserController.resetPswd(req, res);
 });
 routes.post('/user', (req, res) => {
@@ -170,5 +170,8 @@ function verifyJWT(req, res, next) {
 //20 sucesso na requisição (create, update, select, delete)
 //21 informações inválidas (fora do padrão esperado. Ex: criar usuário sem email)
 //22 problema interno da aplicação
+
+//30 sucesso na requisição de email para reset de senha
+//31 email inválido na requisição de reset de senha por email
 
 module.exports = routes

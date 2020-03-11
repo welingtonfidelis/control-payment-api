@@ -64,7 +64,6 @@ module.exports = {
                     );
                     Util.saveLogInfo(`${action} INVALID PASSWORD`, id);
                 }
-
             }
             else {
                 res.status(200).send(
@@ -94,7 +93,7 @@ module.exports = {
             if (query) {
                 const { id, name } = query;
                 const token = jwt.sign({ id }, process.env.SECRET, {
-                    expiresIn: 300
+                    expiresIn: 600
                 });
 
                 await User.update(
@@ -122,21 +121,25 @@ module.exports = {
                     html: `
                         <b>Olá ${name}.</b>
                         <p>Houve um pedido de recuperação de senha no seu e-mail, 
-                        caso não tenha sido você, pedimos que ignore esta mensagem. Agora,
-                        se gostaria de recuperar sua senha, 
-                        <a href="http://localhost:3001/${token}">clique aqui</a></p>
+                        caso não tenha sido você, pedimos que ignore esta mensagem. </p>
+                        <p>Agora, se gostaria realmente de recuperar sua senha,
+                        <a href="http://localhost:3000/changepassword/${token}">clique aqui</a> 
+                        para ir até a página de alteração de senha.</p>
+                        <p><strong>Esta alteração deve ser 
+                        feita em até 10 minutos após o recebimento deste email.</strong></p>
                         `
                 });
+                res.status(200).send({ status: true, response: 'reset password sended', code: 30 });
+            }
+            else {
+                res.status(400).send({ status: false, response: 'mail not found', code: 31 });
             }
 
-
-            res.status(200).send({ status: true, response: query, code: 20 });
         } catch (error) {
             const err = error.stack || error.errors || error.message || error;
             Util.saveLogError(action, err, 1)
             res.status(500).send({ status: false, response: err, code: 22 })
         }
-
     },
 
     async resetPswd(req, res) {
@@ -144,23 +147,28 @@ module.exports = {
             action = 'RESET PASSWORD USER';
         password = bcrypt.hashSync(password, saltRounds);
 
-        try {
-            const query = await User.update(
-                { password },
-                {
-                    return: true,
-                    where: {
-                        tokenResetPswd: token
-                    }
-                });
+        if (password.length >= 8) {
+            try {
+                const query = await User.update(
+                    { password, tokenResetPswd: null },
+                    {
+                        return: true,
+                        where: {
+                            tokenResetPswd: token
+                        }
+                    });
 
-            Util.saveLogInfo(action, UserId)
-            res.status(200).send({ status: true, response: query, code: 20 });
+                Util.saveLogInfo(action, UserId)
+                res.status(200).send({ status: true, response: query, code: 20 });
 
-        } catch (error) {
-            const err = error.stack || error.errors || error.message || error;
-            Util.saveLogError(action, err, UserId)
-            res.status(500).send({ status: false, response: err, code: 22 })
+            } catch (error) {
+                const err = error.stack || error.errors || error.message || error;
+                Util.saveLogError(action, err, UserId)
+                res.status(500).send({ status: false, response: err, code: 22 })
+            }
+        }
+        else {
+            res.status(400).send({ status: false, response: 'invalid user info', code: 21 })
         }
     },
 
