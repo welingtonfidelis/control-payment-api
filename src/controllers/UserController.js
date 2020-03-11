@@ -123,7 +123,7 @@ module.exports = {
                         <p>Houve um pedido de recuperação de senha no seu e-mail, 
                         caso não tenha sido você, pedimos que ignore esta mensagem. </p>
                         <p>Agora, se gostaria realmente de recuperar sua senha,
-                        <a href="http://localhost:3000/changepassword/${token}">clique aqui</a> 
+                        <a href="${process.env.URL_FRONT}/changepassword/${token}">clique aqui</a> 
                         para ir até a página de alteração de senha.</p>
                         <p><strong>Esta alteração deve ser 
                         feita em até 10 minutos após o recebimento deste email.</strong></p>
