@@ -34,6 +34,9 @@ routes.post('/user', (req, res) => {
 routes.get('/user', (req, res) => {
     UserController.getAll(req, res)
 });
+routes.get('/user/bytoken', (req, res) => {
+    UserController.getByToken(req, res)
+});
 routes.get('/user/byuser', (req, res) => {
     UserController.getByUser(req, res)
 });

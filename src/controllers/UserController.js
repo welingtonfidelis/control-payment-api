@@ -288,6 +288,35 @@ module.exports = {
         }
     },
 
+    async getByToken(req, res) {
+        const { UserId } = req.body, action = 'SELECT USER';
+
+        try {
+            const query = await User.findOne({
+                where: { id: UserId },
+                attributes: [
+                    "id", "name", "email", "phone",
+                    "user", "birth", "isAdm", "createdAt"
+                ],
+                include: [{
+                    model: Address,
+                    attributes: [
+                        "id", "cep", "state",
+                        "city", "district", "street",
+                        "complement", "number"
+                    ]
+                }],
+            })
+
+            res.status(200).send({ status: true, response: query, code: 20 });
+
+        } catch (error) {
+            const err = error.stack || error.errors || error.message || error;
+            Util.saveLogError(action, err, UserId)
+            res.status(500).send({ status: false, response: err })
+        }
+    },
+
     async getByUser(req, res) {
 
         const { UserId } = req.body, { user } = req.query, action = 'GET USER BY USER';
@@ -325,12 +354,12 @@ module.exports = {
     },
 
     async update(req, res) {
-        const { user, UserId } = req.body, { id } = req.params, action = 'UPDATE USER';
+        const { user, UserId, address } = req.body, { id } = req.params, action = 'UPDATE USER';
 
         if (await schema.isValid(user)) {
             try {
                 //atualiza endereço
-                await AddressController.update(req, res);
+                if(address) await AddressController.update(req, res);
 
                 const query = await User.update(
                     user,
