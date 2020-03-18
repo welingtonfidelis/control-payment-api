@@ -34,6 +34,9 @@ routes.post('/user', (req, res) => {
 routes.get('/user', (req, res) => {
     UserController.getAll(req, res)
 });
+routes.get('/user/bytoken', (req, res) => {
+    UserController.getByToken(req, res)
+});
 routes.get('/user/byuser', (req, res) => {
     UserController.getByUser(req, res)
 });
@@ -45,6 +48,9 @@ routes.get('/user/:id', (req, res) => {
 });
 routes.get('/user/logs/:id', (req, res) => {
     UserController.getUserLogs(req, res)
+});
+routes.put('/user/login', (req, res) => {
+    UserController.updateLoginInfo(req, res)
 });
 routes.put('/user/:id', (req, res) => {
     UserController.update(req, res)
@@ -76,6 +82,9 @@ routes.delete('/taxpayer/:id', (req, res) => {
 //Endereço
 routes.get('/address/state', (req, res) => {
     AddressController.getState(req, res);
+});
+routes.put('/address', (req, res) => {
+    AddressController.update(req, res);
 });
 
 //Doações

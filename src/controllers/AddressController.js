@@ -37,12 +37,12 @@ module.exports = {
         } catch (error) {
           const err = error.stack || error.errors || error.message || error;
           Util.saveLogError(action, err, UserId)
-          res.status(500).send({ status: false, response: err, code: 22 })
+          res.status(500).send({ status: false, response: err, code: 22 });
         }
       },
 
     async update(req, res) {
-        let { UserId, address } = req.body, action = 'UPDATE ADDRESS';
+        let { UserId, address, returnInf } = req.body, action = 'UPDATE ADDRESS';
 
         address = validValues(address);
         
@@ -57,13 +57,25 @@ module.exports = {
                 }
             );   
 
-            Util.saveLogInfo(action, UserId)        
-            return query.dataValues;
+            //chamada requer retorno ao usuário
+            if(returnInf) {
+                res.status(200).send({ status: true, response: query, code: 20 });
+            }
+            //chamada de função interna no servidor
+            else {
+                Util.saveLogInfo(action, UserId)        
+                return query.dataValues;
+            }
 
         } catch (error) {
             const err = error.stack || error.errors || error.message || error;
             Util.saveLogError(action, err, UserId)
             console.log(err);
+
+            //chamada requer retorno ao usuário
+            if(returnInf) {
+                res.status(500).send({ status: false, response: err, code: 22 });
+            }
         }
     },
 

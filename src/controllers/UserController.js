@@ -288,6 +288,35 @@ module.exports = {
         }
     },
 
+    async getByToken(req, res) {
+        const { UserId } = req.body, action = 'SELECT USER';
+
+        try {
+            const query = await User.findOne({
+                where: { id: UserId },
+                attributes: [
+                    "id", "name", "email", "phone",
+                    "user", "birth", "isAdm", "createdAt"
+                ],
+                include: [{
+                    model: Address,
+                    attributes: [
+                        "id", "cep", "state",
+                        "city", "district", "street",
+                        "complement", "number"
+                    ]
+                }],
+            })
+
+            res.status(200).send({ status: true, response: query, code: 20 });
+
+        } catch (error) {
+            const err = error.stack || error.errors || error.message || error;
+            Util.saveLogError(action, err, UserId)
+            res.status(500).send({ status: false, response: err })
+        }
+    },
+
     async getByUser(req, res) {
 
         const { UserId } = req.body, { user } = req.query, action = 'GET USER BY USER';
@@ -325,12 +354,12 @@ module.exports = {
     },
 
     async update(req, res) {
-        const { user, UserId } = req.body, { id } = req.params, action = 'UPDATE USER';
+        const { user, UserId, address } = req.body, { id } = req.params, action = 'UPDATE USER';
 
         if (await schema.isValid(user)) {
             try {
                 //atualiza endereço
-                await AddressController.update(req, res);
+                if (address) await AddressController.update(req, res);
 
                 const query = await User.update(
                     user,
@@ -352,6 +381,61 @@ module.exports = {
         }
         else {
             res.status(400).send({ status: false, response: 'invalid user info', code: 21 })
+        }
+    },
+
+    async updateLoginInfo(req, res) {
+        let { user, oldPassword, password, UserId } = req.body, action = 'UPDATE LOGIN INFO USER';
+
+        try {
+            let query = await User.findOne({
+                where: { id: UserId },
+                attributes: [
+                    "id", "password", "user"
+                ],
+            });
+
+            const hash = query.password;
+            //se update for apenas para o usuário (user) a senha antiga é mantida
+            password = password ? bcrypt.hashSync(password, saltRounds) : hash;
+
+            //se update for apenas para o senha o usuário antigo é mantido
+            user = user ? user : query.user;
+
+            //valida campos enviados (tamanho, tipo)
+            if (await schema2.isValid({ user, oldPassword, password })) {
+                //valida se senha anterior é válida (igual a senha atual)
+                if(await bcrypt.compareSync(oldPassword, hash)){
+                    query = await User.update(
+                        { user, password },
+                        {
+                            return: true,
+                            where: {
+                                id: UserId
+                            }
+                        });
+                }
+                else {
+                    res.status(200).send(
+                        {
+                            status: false,
+                            response: 'invalid password',
+                            code: 12
+                        }
+                    );
+                    Util.saveLogInfo(`${action} INVALID PASSWORD`, id);
+                }
+            }
+            else {
+                res.status(400).send({ status: false, response: 'invalid user info', code: 21 })
+            }
+
+            res.status(200).send({ status: true, response: query, code: 20 });
+
+        } catch (error) {
+            const err = error.stack || error.errors || error.message || error;
+            Util.saveLogError(action, err, UserId)
+            res.status(500).send({ status: false, response: err, code: 22 })
         }
     },
 
@@ -389,3 +473,13 @@ let schema = yup.object().shape({
     phone: yup.string().min(8).required(),
     birth: yup.date().required()
 });
+
+//validação de campos para atualização de usuário e senha apenas
+let schema2 = yup.object().shape({
+    user: yup.string().min(3).required(),
+    oldPassword: yup.string().min(8),
+    password: yup.string().min(8).
+        when('oldPassword', (oldPassword, field) => {
+            oldPassword ? field.required() : field
+        }),
+})
