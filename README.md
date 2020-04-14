@@ -1,6 +1,6 @@
 # control-payment-api
 
-Este projeto foi construído com objetivo de atender necessidades de ONGs no quisito de controle de caixa (entrada e saída), controle de contribuintes e doações mensais. Este repositório contém o backend (api) do sistema, construído em NodeJs e banco de dados Postgres (com uso de ORM - Sequelize). O frontend do sistema está neste repositório [FrontEnd].
+Este projeto foi construído com objetivo de atender necessidades de ONGs no quisito de controle de caixa (entrada e saída), controle de contribuintes e doações mensais. Este repositório contém o backend (API REST) do sistema, construído em NodeJs e banco de dados Postgres (com uso de ORM - Sequelize). O frontend do sistema está neste repositório [FrontEnd].
 
 ### Requisitos
 
