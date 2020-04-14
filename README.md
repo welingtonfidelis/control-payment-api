@@ -14,12 +14,14 @@ Criar um banco de dados com nome 'postgres' com usuário e senha "admin" (ou alt
 Por fim, executar o comando node server.js para que o servidor possa iniciar e estar preparado para atender as requisições HTTP.
 Um modelo do banco de dados pode ser encontrado [neste link], para melhor entendimento das relações.
 
+### Contato
+welingtonfidelis@gmail.com
+Sujestões e pull requests são sempre bem vindos =) 
+
 License
 ----
 
 MIT
-Email para contato welingtonfidelis@gmail.com
-Sujestões e pull requests são sempre bem vindos =) 
 
 **Free Software, Hell Yeah!**
 
