@@ -145,7 +145,7 @@ routes.delete('/cashregister/:id', (req, res) => {
 });
 
 
-//Validação de Token para continuar a executar requizição
+//Validação de Token para continuar a executar requisição
 function verifyJWT(req, res, next) {
     let token = req.headers['token']
 

@@ -22,5 +22,5 @@ app.listen(process.env.PORT || port, function () {
     routine.sendEmailReminder();
 
     //manter servidor heroku ativo 
-    routine.wakeUpDyno();
+    // routine.wakeUpDyno();
 });
