@@ -5,7 +5,6 @@ const yup = require('yup');
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
 
-require('dotenv-safe').config()
 const jwt = require('jsonwebtoken');
 
 const AddressController = require('./AddressController');
