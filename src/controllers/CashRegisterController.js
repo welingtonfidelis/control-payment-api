@@ -2,7 +2,6 @@ const Util = require('../services/Util');
 const { Op } = require('sequelize');
 const yup = require('yup');
 
-require('dotenv-safe').config()
 const jwt = require('jsonwebtoken');
 
 const DonationController = require('./DonationController');

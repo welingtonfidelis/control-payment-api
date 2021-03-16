@@ -1,10 +1,11 @@
 {
   "development": {
-    "username": "admin",
-    "password": "admin",
-    "database": "postgres",
-    "host": "127.0.0.1",
-    "dialect": "postgres"
+    "use_env_variable": "DATABASE_URL",
+    "dialectOptions": {
+      "ssl": {
+        "rejectUnauthorized": false
+      }
+    }
   },
   "test": {
     "username": "root",

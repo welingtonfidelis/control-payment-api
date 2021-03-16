@@ -1,6 +1,5 @@
-const express = require('express')
-const routes = express.Router()
-require('dotenv-safe').config()
+const express = require('express');
+const routes = express.Router();
 const jwt = require('jsonwebtoken');
 
 const UserController = require('./controllers/UserController');
