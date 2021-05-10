@@ -1,6 +1,7 @@
 {
   "development": {
     "use_env_variable": "DATABASE_URL",
+    "logging": false,
     "dialectOptions": {
       "ssl": {
         "rejectUnauthorized": false
@@ -16,6 +17,7 @@
   },
   "production": {
     "use_env_variable": "DATABASE_URL",
+    "logging": false,
     "dialectOptions": {
       "ssl": {
         "rejectUnauthorized": false

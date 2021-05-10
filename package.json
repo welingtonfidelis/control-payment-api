@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "back-end de aplicaçao para controle e gerenciamento de usuarios, clientes e doaçoes",
   "main": "server.js",
+  "engines": {
+    "node": "10.x"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon server.js",
